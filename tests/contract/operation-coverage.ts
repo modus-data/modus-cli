@@ -76,6 +76,8 @@ export const OPERATIONS: Record<string, string> = {
 
   // --- Usage ---
   UsageController_list: 'modus usage list',
+  UsageController_listUsers: 'phase 2 — pending',
+
 
   // --- Users ---
   MemberGroupsController_list: 'phase 2 — pending',
