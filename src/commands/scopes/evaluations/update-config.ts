@@ -37,5 +37,7 @@ export default class ScopesEvaluationsUpdateConfig extends BaseCommand<typeof Sc
       body as unknown as Parameters<typeof evaluations.updateConfig>[0],
     )
     this.print(config, () => JSON.stringify(config, null, 2))
+    // The API returns the pre-write state on this endpoint — run `get-config` for the current value.
+    this.warn(`Response reflects state before this update — run \`scopes evaluations get-config ${this.args.id}\` to see the current value.`)
   }
 }

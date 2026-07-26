@@ -25,5 +25,7 @@ export default class ScopesSupervisionSet extends BaseCommand<typeof ScopesSuper
       subordinateAgentIds: this.flags['subordinate-id'] ?? [],
     })
     this.print(supervision, () => JSON.stringify(supervision, null, 2))
+    // The API returns the pre-write state on this endpoint — run `get` for the current value.
+    this.warn(`Response reflects state before this update — run \`scopes supervision get ${this.args.id}\` to see the current value.`)
   }
 }
