@@ -18,8 +18,8 @@ npm install -g @getmodus/cli
 ## Authenticate
 
 ```bash
-modus login                       # prompts for a PAT (hidden input) — preferred for CI/scripts
-modus login --oauth               # browser-based OAuth — preferred for interactive/local use
+modus login                       # browser-based OAuth (default) — preferred for interactive/local use
+modus login --no-oauth            # prompts for a PAT (hidden input) instead — preferred for CI/scripts/headless
 modus whoami                      # confirm the resolved org/token/auth method
 ```
 
@@ -27,17 +27,20 @@ modus whoami                      # confirm the resolved org/token/auth method
 stored credential — the preferred way to authenticate in CI/scripts. Avoid
 `modus login --token modus_xxx`: a token passed as a command-line argument is
 readable from shell history, `ps`, and often CI logs. If you must automate
-login non-interactively, pipe the token to stdin of the hidden prompt or set
-`MODUS_API_KEY` instead.
+login non-interactively, pipe the token to stdin of `modus login --no-oauth`'s
+hidden prompt, or set `MODUS_API_KEY` instead.
 
-`modus login --oauth` opens your browser to sign in and grant the CLI the full
-REST API scope surface, then stores a rotating access/refresh token pair —
-`modus` transparently refreshes the access token (1-hour lifetime) before it
-expires, so you only re-authenticate when the 30-day refresh token itself
-expires or is revoked. `modus logout` revokes the grant server-side in
-addition to clearing the local credential. Add `--issuer` only for
-non-standard deployments (e.g. local dev) where the OAuth authorization
-server doesn't live at the `app.*` counterpart of `--base-url`.
+`modus login` opens your browser to sign in and requests every scope the
+server currently advertises — the consent/token exchange narrows this down to
+whatever your account's role actually allows, the same access you already have
+in the SPA, nothing more and nothing the CLI holds back. It then stores a
+rotating access/refresh token pair — `modus` transparently refreshes the
+access token (1-hour lifetime) before it expires, so you only re-authenticate
+when the 30-day refresh token itself expires or is revoked. `modus logout`
+revokes the grant server-side in addition to clearing the local credential.
+Add `--issuer` only for non-standard deployments (e.g. local dev) where the
+OAuth authorization server doesn't live at the `app.*` counterpart of
+`--base-url`.
 
 **Testing against a non-default environment (e.g. staging):** `chat`, `scopes
 chat`, and their conversation-continuation calls route through the agent

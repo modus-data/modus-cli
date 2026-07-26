@@ -9,7 +9,6 @@ import {
   exchangeCode,
   generatePkce,
   generateState,
-  OAUTH_SCOPES,
   openBrowser,
   registerClient,
   startLoopbackServer,
@@ -19,25 +18,27 @@ import { promptHidden } from '../prompt.js'
 const DEFAULT_BASE_URL = 'https://api.getmodus.com'
 
 export default class Login extends BaseCommand<typeof Login> {
-  static description = 'Authenticate the CLI with a Modus personal access token (PAT) or OAuth.'
+  static description = 'Authenticate the CLI via OAuth (default, browser-based) or a personal access token (PAT).'
 
   static examples = [
     '<%= config.bin %> login',
+    '<%= config.bin %> login --no-oauth',
     '<%= config.bin %> login --token modus_pat_<orgUuid>_<prefix>_<secret>',
-    '<%= config.bin %> login --oauth',
   ]
 
   static flags = {
     ...BaseCommand.baseFlags,
     token: Flags.string({
       description:
-        'Personal access token. Prompted (hidden input) if omitted — prefer that, or MODUS_API_KEY, ' +
-        'over this flag: a token on the command line is readable from shell history, `ps`, and CI logs.',
-      exclusive: ['oauth'],
+        'Personal access token — implies --no-oauth. Prompted (hidden input) if you pass --no-oauth without ' +
+        '--token; prefer that, or MODUS_API_KEY, over this flag: a token on the command line is readable ' +
+        'from shell history, `ps`, and CI logs.',
     }),
     oauth: Flags.boolean({
-      description: 'Authenticate via OAuth (browser-based) instead of a PAT.',
-      exclusive: ['token'],
+      description:
+        'Authenticate via OAuth (browser-based). This is the default; pass --no-oauth (or --token) for the ' +
+        'PAT flow instead — e.g. in a headless environment with no browser.',
+      allowNo: true,
     }),
     issuer: Flags.string({
       description:
@@ -50,8 +51,9 @@ export default class Login extends BaseCommand<typeof Login> {
   }
 
   async run(): Promise<void> {
-    if (this.flags.oauth) return this.runOAuthLogin()
-    return this.runTokenLogin()
+    const wantsToken = this.flags.token !== undefined || this.flags.oauth === false
+    if (wantsToken) return this.runTokenLogin()
+    return this.runOAuthLogin()
   }
 
   private async runTokenLogin(): Promise<void> {
@@ -98,7 +100,10 @@ export default class Login extends BaseCommand<typeof Login> {
         clientId,
         redirectUri: loopback.redirectUri,
         resource: baseUrl,
-        scope: OAUTH_SCOPES,
+        // Request everything the server currently advertises — the consent/token
+        // flow narrows this to the user's actual role permissions server-side, so
+        // this is "everything this user can already do", not a CLI-chosen subset.
+        scope: metadata.scopes_supported,
         codeChallenge: challenge,
         state,
       })

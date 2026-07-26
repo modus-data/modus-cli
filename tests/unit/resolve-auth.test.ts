@@ -97,6 +97,7 @@ describe('BaseCommand.resolveAuth', () => {
       token_endpoint: 'https://app.getmodus.com/oauth/token',
       registration_endpoint: 'https://app.getmodus.com/oauth/register',
       revocation_endpoint: 'https://app.getmodus.com/oauth/revoke',
+      scopes_supported: ['workflows:read'],
     }
     const tokenResponse = {
       access_token: 'modus_oat_new',

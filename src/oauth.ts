@@ -5,21 +5,6 @@ import { spawn } from 'node:child_process'
 import { platform } from 'node:process'
 import { ValidationError } from '@getmodus/sdk'
 
-/** Full REST API scope surface (packages/permissions/src/permissions.ts `API_SURFACE_SCOPES`). */
-export const OAUTH_SCOPES = [
-  'workflows:read',
-  'workflows:invoke',
-  'workflows:write',
-  'scopes:read',
-  'scopes:invoke',
-  'scopes:write',
-  'context:read',
-  'context:write',
-  'users:read',
-  'users:write',
-  'usage:read',
-] as const
-
 const SOFTWARE_ID = 'com.modus.cli'
 
 export interface AsMetadata {
@@ -28,6 +13,16 @@ export interface AsMetadata {
   token_endpoint: string
   registration_endpoint: string
   revocation_endpoint: string
+  /**
+   * The server's own advertised scope list — request all of it rather than a
+   * hardcoded CLI-side copy. The consent/token flow already narrows the
+   * grant to `requested ∩ API_SURFACE_SCOPES ∩ userRoleScopes`
+   * (apps/services/modus-api/src/oauth/consent/consent.service.ts), so
+   * requesting everything the server advertises is exactly "everything this
+   * user's role allows" — the same access they already have via the SPA/PAT —
+   * with no CLI-side allow-list to fall out of sync as scopes are added.
+   */
+  scopes_supported: string[]
 }
 
 export interface TokenResponse {

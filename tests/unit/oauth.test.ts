@@ -8,7 +8,6 @@ import {
   exchangeCode,
   generatePkce,
   generateState,
-  OAUTH_SCOPES,
   refreshTokens,
   registerClient,
   revokeToken,
@@ -70,6 +69,7 @@ describe('generateState', () => {
 
 describe('buildAuthorizeUrl', () => {
   it('encodes all required RFC 8707/PKCE params', () => {
+    const scope = ['workflows:read', 'scopes:invoke']
     const url = new URL(
       buildAuthorizeUrl(
         {
@@ -78,12 +78,13 @@ describe('buildAuthorizeUrl', () => {
           token_endpoint: 'https://app.getmodus.com/oauth/token',
           registration_endpoint: 'https://app.getmodus.com/oauth/register',
           revocation_endpoint: 'https://app.getmodus.com/oauth/revoke',
+          scopes_supported: scope,
         },
         {
           clientId: 'dyn_abc',
           redirectUri: 'http://127.0.0.1:51234/callback',
           resource: 'https://api.getmodus.com',
-          scope: OAUTH_SCOPES,
+          scope,
           codeChallenge: 'chal123',
           state: 'state123',
         },
@@ -97,7 +98,7 @@ describe('buildAuthorizeUrl', () => {
     expect(url.searchParams.get('code_challenge')).toBe('chal123')
     expect(url.searchParams.get('code_challenge_method')).toBe('S256')
     expect(url.searchParams.get('state')).toBe('state123')
-    expect(url.searchParams.get('scope')).toBe(OAUTH_SCOPES.join(' '))
+    expect(url.searchParams.get('scope')).toBe(scope.join(' '))
   })
 })
 
@@ -155,6 +156,7 @@ describe('fetch-based OAuth calls', () => {
     token_endpoint: 'https://app.getmodus.com/oauth/token',
     registration_endpoint: 'https://app.getmodus.com/oauth/register',
     revocation_endpoint: 'https://app.getmodus.com/oauth/revoke',
+    scopes_supported: ['workflows:read'],
   }
 
   beforeEach(() => {
