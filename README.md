@@ -31,11 +31,6 @@ modus login                  # opens your browser to sign in
 modus scopes list --pretty   # confirm it worked
 ```
 
-Built on [`@getmodus/sdk`](https://www.npmjs.com/package/@getmodus/sdk) — every
-command is a thin wrapper over a real SDK method, so the CLI follows the same
-compatibility policy as the SDK
-([`COMPATIBILITY.md`](../../../docs/COMPATIBILITY.md)).
-
 ## Authenticate
 
 ```bash
@@ -45,29 +40,18 @@ modus whoami             # confirm the resolved org/token/auth method
 ```
 
 - **OAuth (default)** opens your browser and requests exactly the access your
-  account already has in the SPA — nothing more, nothing held back. The access
-  token refreshes automatically; `modus logout` revokes the grant server-side.
+  account already has in the Modus web app — nothing more, nothing held back.
+  The access token refreshes automatically; `modus logout` revokes it
+  server-side.
 - **CI/scripts:** set `MODUS_API_KEY` and `MODUS_BASE_URL` — these always
   override the stored credential and are the preferred way to authenticate
   non-interactively.
 - Avoid `modus login --token modus_xxx` — a token on the command line is
   readable from shell history, `ps`, and CI logs.
 
-<details>
-<summary><strong>Non-standard deployments &amp; staging</strong></summary>
-
-- `--issuer` — only needed if the OAuth authorization server doesn't live at
-  the `app.*` counterpart of `--base-url` (e.g. local dev).
-- **Staging:** `chat` and `scopes chat` route through the agent service, not
-  the REST API — set `MODUS_AGENT_HOST` (e.g.
-  `https://agent.staging.getmodus.com`) alongside `MODUS_BASE_URL`, or those
-  commands silently hit production and fail with `Invalid access token`.
-
-</details>
-
 ## Output
 
-- Every non-streaming command prints **compact JSON by default** — pipe it to
+- Commands that return data print **compact JSON by default** — pipe it to
   `jq`, a script, or an agent.
 - Pass `--pretty` for a human-readable table or summary instead.
 - **Exception:** `chat` / `scopes chat` stream raw response text by default;
@@ -106,24 +90,18 @@ modus runs list-active --pretty
 modus runs cancel <runId>
 ```
 
+## Features
+
+- **Scopes** — chat, create, deploy, evaluations, memories, supervision, MCP
+  configuration, ownership transfer.
+- **Workflows** — create, trigger, run history, ownership transfer.
+- **Context** — organization context items, notes, saved queries.
+- **Connections, usage, and org members.**
+
 ## Commands
 
 Run `modus --help` or `modus <topic> --help` (e.g. `modus scopes --help`) for
 the full, current list — this README doesn't duplicate it since it drifts.
-
-## Coverage
-
-The CLI covers the full public API surface:
-
-- Auth, scopes (evaluations, memories, supervision, MCP config, ownership
-  transfer), workflows (ownership transfer), context, connections, usage,
-  chat, suggestions, org members, and run/workflow-action lifecycle.
-- Two independent public services, both covered: `api.getmodus.com`
-  (modus-api) and `agent.getmodus.com` (agent-service).
-
-See
-[`tests/contract/operation-coverage.ts`](tests/contract/operation-coverage.ts)
-for the exact operation-by-operation mapping.
 
 ## Development
 
@@ -132,5 +110,3 @@ pnpm --filter @getmodus/cli run build
 pnpm --filter @getmodus/cli exec vitest run
 ./bin/dev.js --help   # run from source (tsx), no build needed
 ```
-
-See [`../docs/PUBLISHING.md`](../docs/PUBLISHING.md) for the release process.
