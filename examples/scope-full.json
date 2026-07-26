@@ -11,6 +11,6 @@
     "sql_runner": { "enabled": true, "selectors": ["<connection-id>"] }
   },
   "connectionSet": [],
-  "contextSelections": [],
+  "contextSelections": [{ "kind": "static_ids", "staticIds": ["<context-item-uid>"] }],
   "guardrails": ["no-pii"]
 }

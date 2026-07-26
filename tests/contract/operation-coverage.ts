@@ -51,28 +51,28 @@ export const OPERATIONS: Record<string, string> = {
   ScopeContextController_compose: 'modus scopes context',
   ScopeConversationsController_list: 'modus scopes conversations list',
   ScopeConversationsController_get: 'modus scopes conversations get',
-  ScopesController_restore: 'phase 2 — pending',
-  ScopesController_patchMcpConfig: 'phase 2 — pending',
-  ScopesController_getVariation: 'phase 2 — pending',
-  ScopesController_requestOwnershipTransfer: 'phase 2 — pending',
-  ScopesController_cancelOwnershipTransfer: 'phase 2 — pending',
-  ScopesController_acceptOwnershipTransfer: 'phase 2 — pending',
-  ScopeMemoriesController_list: 'phase 2 — pending',
-  ScopeMemoriesController_search: 'phase 2 — pending',
-  ScopeMemoriesController_update: 'phase 2 — pending',
-  ScopeMemoriesController_delete: 'phase 2 — pending',
-  ScopeSupervisionController_get: 'phase 2 — pending',
-  ScopeSupervisionController_set: 'phase 2 — pending',
-  ScopeSupervisionController_setActive: 'phase 2 — pending',
-  EvaluationsController_getConfig: 'phase 2 — pending',
-  EvaluationsController_updateConfig: 'phase 2 — pending',
-  EvaluationsController_triggerRun: 'phase 2 — pending',
-  EvaluationsController_listRuns: 'phase 2 — pending',
-  EvaluationsController_getRun: 'phase 2 — pending',
+  ScopesController_restore: 'modus scopes restore',
+  ScopesController_patchMcpConfig: 'modus scopes mcp-config',
+  ScopesController_getVariation: 'modus scopes variations get',
+  ScopesController_requestOwnershipTransfer: 'modus scopes ownership request',
+  ScopesController_cancelOwnershipTransfer: 'modus scopes ownership cancel',
+  ScopesController_acceptOwnershipTransfer: 'modus scopes ownership accept',
+  ScopeMemoriesController_list: 'modus scopes memories list',
+  ScopeMemoriesController_search: 'modus scopes memories search',
+  ScopeMemoriesController_update: 'modus scopes memories update',
+  ScopeMemoriesController_delete: 'modus scopes memories delete',
+  ScopeSupervisionController_get: 'modus scopes supervision get',
+  ScopeSupervisionController_set: 'modus scopes supervision set',
+  ScopeSupervisionController_setActive: 'modus scopes supervision set-active',
+  EvaluationsController_getConfig: 'modus scopes evaluations get-config',
+  EvaluationsController_updateConfig: 'modus scopes evaluations update-config',
+  EvaluationsController_triggerRun: 'modus scopes evaluations trigger-run',
+  EvaluationsController_listRuns: 'modus scopes evaluations runs list',
+  EvaluationsController_getRun: 'modus scopes evaluations runs get',
 
   // --- Suggestions ---
-  SuggestionsController_listApproved: 'phase 2 — pending',
-  SuggestionsController_recordEvent: 'phase 2 — pending',
+  SuggestionsController_listApproved: 'modus suggestions list',
+  SuggestionsController_recordEvent: 'modus suggestions record-event',
 
   // --- Usage ---
   UsageController_list: 'modus usage list',
@@ -82,8 +82,8 @@ export const OPERATIONS: Record<string, string> = {
   ToolsController_list: 'modus tools list',
 
   // --- Users ---
-  MemberGroupsController_list: 'phase 2 — pending',
-  OrgMembersController_list: 'phase 2 — pending',
+  MemberGroupsController_list: 'modus member-groups list',
+  OrgMembersController_list: 'modus org-members list',
 
   // --- Workflows ---
   WorkflowsController_list: 'modus workflows list',
@@ -100,10 +100,10 @@ export const OPERATIONS: Record<string, string> = {
   WorkflowInterfacesController_deleteAll: 'modus workflows interfaces delete-all',
   WorkflowRunsController_list: 'modus workflows runs list',
   WorkflowRunsController_get: 'modus workflows runs get',
-  WorkflowsController_restore: 'phase 2 — pending',
-  WorkflowsController_requestOwnershipTransfer: 'phase 2 — pending',
-  WorkflowsController_cancelOwnershipTransfer: 'phase 2 — pending',
-  WorkflowsController_acceptOwnershipTransfer: 'phase 2 — pending',
+  WorkflowsController_restore: 'modus workflows restore',
+  WorkflowsController_requestOwnershipTransfer: 'modus workflows ownership request',
+  WorkflowsController_cancelOwnershipTransfer: 'modus workflows ownership cancel',
+  WorkflowsController_acceptOwnershipTransfer: 'modus workflows ownership accept',
 
   // --- Agent-service (run creation & lifecycle) — separate public spec from
   // modus-api, missed entirely in the CLI's first coverage pass. ScopeRunsController_create
@@ -121,6 +121,6 @@ export const OPERATIONS: Record<string, string> = {
   RunLifecycleController_interrupt: 'modus runs interrupt',
   RunLifecycleController_editQueued: 'modus runs edit-queued',
   RunLifecycleController_stream: 'modus runs stream',
-  WorkflowActionsController_execute: 'phase 2 — pending',
-  WorkflowActionsController_cancel: 'phase 2 — pending',
+  WorkflowActionsController_execute: 'modus workflow-actions execute',
+  WorkflowActionsController_cancel: 'modus workflow-actions cancel',
 }
