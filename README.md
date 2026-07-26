@@ -6,73 +6,76 @@
   />
 </p>
 
-# Modus CLI
+<h1 align="center">Modus CLI</h1>
 
-[![npm](https://img.shields.io/npm/v/@getmodus/cli)](https://www.npmjs.com/package/@getmodus/cli)
-[![Node.js](https://img.shields.io/node/v/@getmodus/cli)](https://www.npmjs.com/package/@getmodus/cli)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+<p align="center">
+  The official command-line client for <a href="https://getmodus.com">Modus</a> —
+  chat with your scopes, manage workflows and context, and script against the
+  Modus API from a terminal, a CI pipeline, or an agent.
+</p>
 
-The official command-line client for [Modus](https://getmodus.com) — your
-organization's context layer for AI. Chat with your scopes, trigger and manage
-workflows, and read or write organization context, all from a terminal, a
-script, or an agent.
+<p align="center">
+  <a href="https://www.npmjs.com/package/@getmodus/cli"><img alt="npm" src="https://img.shields.io/npm/v/@getmodus/cli"></a>
+  <a href="https://www.npmjs.com/package/@getmodus/cli"><img alt="Node.js" src="https://img.shields.io/node/v/@getmodus/cli"></a>
+  <a href="https://opensource.org/licenses/MIT"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg"></a>
+</p>
 
-Every command is a thin wrapper over [`@getmodus/sdk`](https://www.npmjs.com/package/@getmodus/sdk),
-so the CLI's coverage and compatibility guarantees follow the same policy as
-the SDK ([`COMPATIBILITY.md`](../../../docs/COMPATIBILITY.md)).
+---
 
-## Install
+## Quick start
 
 ```bash
 npm install -g @getmodus/cli
+
+modus login                  # opens your browser to sign in
+modus scopes list --pretty   # confirm it worked
 ```
+
+Built on [`@getmodus/sdk`](https://www.npmjs.com/package/@getmodus/sdk) — every
+command is a thin wrapper over a real SDK method, so the CLI follows the same
+compatibility policy as the SDK
+([`COMPATIBILITY.md`](../../../docs/COMPATIBILITY.md)).
 
 ## Authenticate
 
 ```bash
-modus login                       # browser-based OAuth (default) — preferred for interactive/local use
-modus login --no-oauth            # prompts for a PAT (hidden input) instead — preferred for CI/scripts/headless
-modus whoami                      # confirm the resolved org/token/auth method
+modus login              # browser-based OAuth (default) — interactive/local use
+modus login --no-oauth   # PAT prompt instead — CI/scripts/headless
+modus whoami             # confirm the resolved org/token/auth method
 ```
 
-`MODUS_API_KEY` and `MODUS_BASE_URL` environment variables always override the
-stored credential — the preferred way to authenticate in CI/scripts. Avoid
-`modus login --token modus_xxx`: a token passed as a command-line argument is
-readable from shell history, `ps`, and often CI logs. If you must automate
-login non-interactively, pipe the token to stdin of `modus login --no-oauth`'s
-hidden prompt, or set `MODUS_API_KEY` instead.
+- **OAuth (default)** opens your browser and requests exactly the access your
+  account already has in the SPA — nothing more, nothing held back. The access
+  token refreshes automatically; `modus logout` revokes the grant server-side.
+- **CI/scripts:** set `MODUS_API_KEY` and `MODUS_BASE_URL` — these always
+  override the stored credential and are the preferred way to authenticate
+  non-interactively.
+- Avoid `modus login --token modus_xxx` — a token on the command line is
+  readable from shell history, `ps`, and CI logs.
 
-`modus login` opens your browser to sign in and requests every scope the
-server currently advertises — the consent/token exchange narrows this down to
-whatever your account's role actually allows, the same access you already have
-in the SPA, nothing more and nothing the CLI holds back. It then stores a
-rotating access/refresh token pair — `modus` transparently refreshes the
-access token (1-hour lifetime) before it expires, so you only re-authenticate
-when the 30-day refresh token itself expires or is revoked. `modus logout`
-revokes the grant server-side in addition to clearing the local credential.
-Add `--issuer` only for non-standard deployments (e.g. local dev) where the
-OAuth authorization server doesn't live at the `app.*` counterpart of
-`--base-url`.
+<details>
+<summary><strong>Non-standard deployments &amp; staging</strong></summary>
 
-**Testing against a non-default environment (e.g. staging):** `chat`, `scopes
-chat`, and their conversation-continuation calls route through the agent
-service, not the REST API — set `MODUS_AGENT_HOST` (e.g.
-`https://agent.staging.getmodus.com`) alongside `MODUS_BASE_URL`, or those
-commands silently hit the production agent host with a token scoped to a
-different environment and fail with "Invalid access token".
+- `--issuer` — only needed if the OAuth authorization server doesn't live at
+  the `app.*` counterpart of `--base-url` (e.g. local dev).
+- **Staging:** `chat` and `scopes chat` route through the agent service, not
+  the REST API — set `MODUS_AGENT_HOST` (e.g.
+  `https://agent.staging.getmodus.com`) alongside `MODUS_BASE_URL`, or those
+  commands silently hit production and fail with `Invalid access token`.
+
+</details>
 
 ## Output
 
-Every non-streaming command prints **compact JSON by default** — pipe it to
-`jq`, feed it to a script, or hand it to an agent. Pass `--pretty` for a
-human-readable table or summary instead. **Exception:** `chat`/`scopes chat`
-stream raw response text to stdout by default (the natural "JSON" for a chat
-command is the message itself); pass `--json` on those two to get structured
-SSE-derived events instead:
+- Every non-streaming command prints **compact JSON by default** — pipe it to
+  `jq`, a script, or an agent.
+- Pass `--pretty` for a human-readable table or summary instead.
+- **Exception:** `chat` / `scopes chat` stream raw response text by default;
+  pass `--json` on those two for structured SSE events instead.
 
 ```bash
-modus scopes list                 # {"items":[...],"nextPageToken":null}
-modus scopes list --pretty        # aligned table
+modus scopes list             # {"items":[...],"nextPageToken":null}
+modus scopes list --pretty    # aligned table
 ```
 
 ## Examples
@@ -80,32 +83,25 @@ modus scopes list --pretty        # aligned table
 ```bash
 # Chat with a scope (streams the response, then exits)
 modus scopes chat 42 "What changed in revenue last week?"
+modus scopes chat 42                        # same, but interactive
 
-# Same, but interactive (omit the message)
-modus scopes chat 42
-
-# Create a scope — simple fields as flags
+# Create a scope, then deploy it
 modus scopes create --name "Revenue Analyst" --model claude-sonnet-5
-
-# Create a scope with nested config (toolset, connections, ...) — see the
-# fixture for the full shape, then edit and pass it back
-modus scopes create --example > scope.json
+modus scopes create --example > scope.json  # full config fixture
 modus scopes create --file scope.json
-
-# Deploy it
 modus scopes deploy 42
 
-# List workflows, then inspect one run
+# Workflows
 modus workflows list --pretty
 modus workflows runs list 7
 modus workflows runs get 7 wf_7_run_1
+modus workflows run 42 "Run the weekly digest now"
 
-# Manage context
+# Context
 modus context items list --context-type saved_query
 modus context notes create "Q3 pricing" "We raised list price 8% in July."
 
-# Trigger a workflow run now (ad-hoc), and manage it
-modus workflows run 42 "Run the weekly digest now"
+# Active runs
 modus runs list-active --pretty
 modus runs cancel <runId>
 ```
@@ -113,17 +109,19 @@ modus runs cancel <runId>
 ## Commands
 
 Run `modus --help` or `modus <topic> --help` (e.g. `modus scopes --help`) for
-the full, current list — this README does not duplicate it since it drifts.
+the full, current list — this README doesn't duplicate it since it drifts.
 
 ## Coverage
 
-The CLI covers the full public API surface: auth, scopes (including
-evaluations, memories, supervision, MCP config, and ownership transfer),
-workflows (including ownership transfer), context, connections, usage, chat,
-suggestions, the org member directory, and run/workflow-action
-creation and lifecycle. `api.getmodus.com` (modus-api) and
-`agent.getmodus.com` (agent-service) are two independent public services with
-two independent OpenAPI specs — the CLI's coverage tracks both; see
+The CLI covers the full public API surface:
+
+- Auth, scopes (evaluations, memories, supervision, MCP config, ownership
+  transfer), workflows (ownership transfer), context, connections, usage,
+  chat, suggestions, org members, and run/workflow-action lifecycle.
+- Two independent public services, both covered: `api.getmodus.com`
+  (modus-api) and `agent.getmodus.com` (agent-service).
+
+See
 [`tests/contract/operation-coverage.ts`](tests/contract/operation-coverage.ts)
 for the exact operation-by-operation mapping.
 
