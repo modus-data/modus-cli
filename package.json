@@ -1,0 +1,69 @@
+{
+  "name": "@getmodus/cli",
+  "version": "0.0.0",
+  "description": "Official command-line client for Modus — your organization's context layer for AI",
+  "type": "module",
+  "license": "MIT",
+  "keywords": ["modus", "ai", "cli", "data"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/modus-data/modus-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/modus-data/modus-cli/issues"
+  },
+  "homepage": "https://github.com/modus-data/modus-cli#readme",
+  "engines": {
+    "node": ">=18"
+  },
+  "bin": {
+    "modus": "./bin/run.js"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "examples",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "oclif.manifest.json"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "oclif": {
+    "bin": "modus",
+    "dirname": "modus",
+    "commands": "./dist/commands",
+    "plugins": ["@oclif/plugin-help"],
+    "topicSeparator": " ",
+    "topics": {
+      "scopes": { "description": "Chat with, create, and manage Modus scopes" },
+      "workflows": { "description": "Create, deploy, and manage Modus workflows" },
+      "context": { "description": "Read and manage organization context items" },
+      "connections": { "description": "List integration connections" },
+      "usage": { "description": "Inspect organization usage" },
+      "conversations": { "description": "List and read Modus/scope conversation threads" }
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && oclif manifest",
+    "postpack": "rimraf oclif.manifest.json",
+    "prepack": "pnpm run build",
+    "test": "vitest run",
+    "clean": "rimraf dist tsconfig.tsbuildinfo oclif.manifest.json"
+  },
+  "dependencies": {
+    "@getmodus/sdk": "workspace:*",
+    "@oclif/core": "^4.13.0",
+    "@oclif/plugin-help": "^6.2.53"
+  },
+  "devDependencies": {
+    "oclif": "^4.23.29",
+    "rimraf": "^6.0.1",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2",
+    "vitest": "^3.2.6"
+  }
+}

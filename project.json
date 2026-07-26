@@ -1,0 +1,43 @@
+{
+  "name": "modus-cli",
+  "sourceRoot": "distribution/clients/cli/modus-cli/src",
+  "projectType": "application",
+  "tags": ["scope:cli", "type:app", "lang:typescript"],
+  "implicitDependencies": ["modus-sdk-typescript"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": [{ "projects": ["modus-sdk-typescript"], "target": "build" }],
+      "options": {
+        "command": "pnpm --filter @getmodus/cli run build",
+        "cwd": "{workspaceRoot}"
+      },
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "pnpm --filter @getmodus/cli exec vitest run",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "dependsOn": [{ "projects": ["modus-sdk-typescript"], "target": "build" }],
+      "options": {
+        "command": "eslint src tests --max-warnings=0 && pnpm exec tsc -p tsconfig.json --noEmit",
+        "cwd": "{projectRoot}"
+      },
+      "inputs": ["default", "{workspaceRoot}/eslint.config.js"]
+    },
+    "clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pnpm --filter @getmodus/cli run clean",
+        "cwd": "{workspaceRoot}"
+      },
+      "cache": false
+    }
+  }
+}

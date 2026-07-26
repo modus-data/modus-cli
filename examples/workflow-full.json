@@ -1,0 +1,25 @@
+{
+  "name": "Weekly Revenue Digest",
+  "type": "workflow",
+  "description": "Sample scheduled workflow that runs one scope. Edit or delete any field you don't need.",
+  "trigger": {
+    "trigger_type": "schedule",
+    "schedule": {
+      "frequency": "weekly",
+      "time_of_day": "09:00",
+      "timezone": "UTC",
+      "weekdays": ["monday"]
+    }
+  },
+  "agentSelection": {
+    "agents": [
+      {
+        "agent_id": 17,
+        "priority_order": 1,
+        "role": "analyst",
+        "instructions": "Summarize the last 7 days of revenue and flag anomalies."
+      }
+    ]
+  },
+  "guardrails": ["no-pii"]
+}
