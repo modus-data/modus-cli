@@ -1,13 +1,25 @@
-# @getmodus/cli
+<p align="center">
+  <img
+    src="https://raw.githubusercontent.com/modus-data/modus-cli/main/assets/modus-logo.png"
+    alt="Modus"
+    width="280"
+  />
+</p>
 
-Official command-line client for [Modus](https://getmodus.com) — chat with your
-scopes, manage workflows and context, and script against the Modus API from a
-terminal or from an agent.
+# Modus CLI
 
-Built on [`@getmodus/sdk`](https://www.npmjs.com/package/@getmodus/sdk) — every
-command is a thin wrapper over a real SDK method, so the CLI's coverage and
-compatibility guarantees follow the same policy as the SDK
-([`COMPATIBILITY.md`](../../../../docs/COMPATIBILITY.md)).
+[![npm](https://img.shields.io/npm/v/@getmodus/cli)](https://www.npmjs.com/package/@getmodus/cli)
+[![Node.js](https://img.shields.io/node/v/@getmodus/cli)](https://www.npmjs.com/package/@getmodus/cli)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
+The official command-line client for [Modus](https://getmodus.com) — your
+organization's context layer for AI. Chat with your scopes, trigger and manage
+workflows, and read or write organization context, all from a terminal, a
+script, or an agent.
+
+Every command is a thin wrapper over [`@getmodus/sdk`](https://www.npmjs.com/package/@getmodus/sdk),
+so the CLI's coverage and compatibility guarantees follow the same policy as
+the SDK ([`COMPATIBILITY.md`](../../../docs/COMPATIBILITY.md)).
 
 ## Install
 
@@ -103,17 +115,17 @@ modus runs cancel <runId>
 Run `modus --help` or `modus <topic> --help` (e.g. `modus scopes --help`) for
 the full, current list — this README does not duplicate it since it drifts.
 
-## Phasing
+## Coverage
 
-This is a **Phase 1** release: auth, scopes, workflows, context, connections,
-usage, chat, and run creation/lifecycle (`workflows run`, `runs *`). Note that
-`api.getmodus.com` (modus-api) and `agent.getmodus.com` (agent-service) are two
-independent public services with two independent OpenAPI specs — the CLI's
-coverage tracks both. Evaluations, memories, supervision, MCP config, ownership
-transfer, suggestions, the org member directory, and workflow-action execution
-are Phase 2 — see
+The CLI covers the full public API surface: auth, scopes (including
+evaluations, memories, supervision, MCP config, and ownership transfer),
+workflows (including ownership transfer), context, connections, usage, chat,
+suggestions, the org member directory, and run/workflow-action
+creation and lifecycle. `api.getmodus.com` (modus-api) and
+`agent.getmodus.com` (agent-service) are two independent public services with
+two independent OpenAPI specs — the CLI's coverage tracks both; see
 [`tests/contract/operation-coverage.ts`](tests/contract/operation-coverage.ts)
-for the exact operation-by-operation status.
+for the exact operation-by-operation mapping.
 
 ## Development
 
