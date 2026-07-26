@@ -8,7 +8,11 @@ import {
   UnprocessableError,
   ValidationError,
 } from '@getmodus/sdk'
-import { readStoredConfig } from './config.js'
+import { readStoredConfig, writeStoredConfig } from './config.js'
+import { discoverMetadata, refreshTokens } from './oauth.js'
+
+/** Refresh this long before actual expiry — cheap insurance against clock skew and request latency. */
+const OAUTH_REFRESH_SKEW_MS = 60_000
 
 export type CommandFlags<T extends typeof Command> = Interfaces.InferredFlags<T['flags']>
 export type CommandArgs<T extends typeof Command> = Interfaces.InferredArgs<T['args']>
@@ -51,14 +55,39 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
   /** Resolution order: MODUS_API_KEY / MODUS_BASE_URL env vars > stored `modus login` config. */
   protected async resolveAuth(): Promise<{ apiKey: string; baseUrl?: string }> {
     const stored = await readStoredConfig()
-    const apiKey = process.env.MODUS_API_KEY ?? stored.apiKey
     const baseUrl = process.env.MODUS_BASE_URL ?? stored.baseUrl
-    if (!apiKey) {
+
+    // Env var wins outright — an OAuth session on disk never overrides an explicit MODUS_API_KEY.
+    if (process.env.MODUS_API_KEY) return { apiKey: process.env.MODUS_API_KEY, baseUrl }
+
+    if (stored.oauth && stored.apiKey) {
+      if (Date.now() < stored.oauth.accessTokenExpiresAt - OAUTH_REFRESH_SKEW_MS) {
+        return { apiKey: stored.apiKey, baseUrl }
+      }
+      const metadata = await discoverMetadata(stored.oauth.issuer)
+      const refreshed = await refreshTokens(metadata, {
+        refreshToken: stored.oauth.refreshToken,
+        clientId: stored.oauth.clientId,
+      })
+      const updated = {
+        ...stored,
+        apiKey: refreshed.access_token,
+        oauth: {
+          ...stored.oauth,
+          refreshToken: refreshed.refresh_token,
+          accessTokenExpiresAt: Date.now() + refreshed.expires_in * 1000,
+        },
+      }
+      await writeStoredConfig(updated)
+      return { apiKey: updated.apiKey, baseUrl }
+    }
+
+    if (!stored.apiKey) {
       throw new AuthenticationError(
         'Not logged in. Run `modus login` or set the MODUS_API_KEY environment variable.',
       )
     }
-    return { apiKey, baseUrl }
+    return { apiKey: stored.apiKey, baseUrl }
   }
 
   protected async modusClient(): Promise<Modus> {

@@ -2,18 +2,37 @@ import { chmod, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
 
-export interface StoredConfig {
-  apiKey?: string
-  baseUrl?: string
+export interface StoredOAuthSession {
+  issuer: string
+  clientId: string
+  refreshToken: string
+  /** Epoch ms. Refreshed transparently by resolveAuth() shortly before this. */
+  accessTokenExpiresAt: number
 }
 
-const CONFIG_DIR = join(homedir(), '.config', 'modus')
-const CONFIG_FILE = join(CONFIG_DIR, 'config.json')
+export interface StoredConfig {
+  /** PAT, or (when `oauth` is set) the current OAuth access token — both are Bearer-usable `modus_*` strings. */
+  apiKey?: string
+  baseUrl?: string
+  oauth?: StoredOAuthSession
+}
+
 const CONFIG_DIR_MODE = 0o700
 const CONFIG_FILE_MODE = 0o600
 
+// Computed per call, not baked in as a module-load-time constant — so tests
+// can mock node:os's homedir() with a plain vi.mock, no vi.resetModules()/
+// dynamic re-import dance required to get a fresh path.
+function configDir(): string {
+  return join(homedir(), '.config', 'modus')
+}
+
+function configFile(): string {
+  return join(configDir(), 'config.json')
+}
+
 export function configFilePath(): string {
-  return CONFIG_FILE
+  return configFile()
 }
 
 // `mode` on mkdir/writeFile only applies when the path is created — chmod
@@ -23,13 +42,13 @@ export function configFilePath(): string {
 // otherwise stay loose forever for a user who only ever reads (env-var auth
 // callers included, since resolveAuth() always reads first).
 async function tightenConfigPermissions(): Promise<void> {
-  await chmod(CONFIG_DIR, CONFIG_DIR_MODE)
-  await chmod(CONFIG_FILE, CONFIG_FILE_MODE)
+  await chmod(configDir(), CONFIG_DIR_MODE)
+  await chmod(configFile(), CONFIG_FILE_MODE)
 }
 
 export async function readStoredConfig(): Promise<StoredConfig> {
   try {
-    const raw = await readFile(CONFIG_FILE, 'utf8')
+    const raw = await readFile(configFile(), 'utf8')
     await tightenConfigPermissions()
     return JSON.parse(raw) as StoredConfig
   } catch (error) {
@@ -39,13 +58,13 @@ export async function readStoredConfig(): Promise<StoredConfig> {
 }
 
 export async function writeStoredConfig(config: StoredConfig): Promise<void> {
-  await mkdir(CONFIG_DIR, { recursive: true, mode: CONFIG_DIR_MODE })
-  await writeFile(CONFIG_FILE, `${JSON.stringify(config, null, 2)}\n`, { mode: CONFIG_FILE_MODE })
+  await mkdir(configDir(), { recursive: true, mode: CONFIG_DIR_MODE })
+  await writeFile(configFile(), `${JSON.stringify(config, null, 2)}\n`, { mode: CONFIG_FILE_MODE })
   await tightenConfigPermissions()
 }
 
 export async function clearStoredConfig(): Promise<void> {
-  await rm(CONFIG_FILE, { force: true })
+  await rm(configFile(), { force: true })
 }
 
 // Token format is `modus_<type>_<orgUuid>_<prefix>_<secret>` where type is one of

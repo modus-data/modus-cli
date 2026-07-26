@@ -18,8 +18,9 @@ npm install -g @getmodus/cli
 ## Authenticate
 
 ```bash
-modus login                       # prompts for a PAT (hidden input) — preferred
-modus whoami                      # confirm the resolved org/token
+modus login                       # prompts for a PAT (hidden input) — preferred for CI/scripts
+modus login --oauth               # browser-based OAuth — preferred for interactive/local use
+modus whoami                      # confirm the resolved org/token/auth method
 ```
 
 `MODUS_API_KEY` and `MODUS_BASE_URL` environment variables always override the
@@ -28,6 +29,15 @@ stored credential — the preferred way to authenticate in CI/scripts. Avoid
 readable from shell history, `ps`, and often CI logs. If you must automate
 login non-interactively, pipe the token to stdin of the hidden prompt or set
 `MODUS_API_KEY` instead.
+
+`modus login --oauth` opens your browser to sign in and grant the CLI the full
+REST API scope surface, then stores a rotating access/refresh token pair —
+`modus` transparently refreshes the access token (1-hour lifetime) before it
+expires, so you only re-authenticate when the 30-day refresh token itself
+expires or is revoked. `modus logout` revokes the grant server-side in
+addition to clearing the local credential. Add `--issuer` only for
+non-standard deployments (e.g. local dev) where the OAuth authorization
+server doesn't live at the `app.*` counterpart of `--base-url`.
 
 **Testing against a non-default environment (e.g. staging):** `chat`, `scopes
 chat`, and their conversation-continuation calls route through the agent
