@@ -14,6 +14,7 @@ export default class UsageList extends BaseCommand<typeof UsageList> {
     until: Flags.string({ description: 'ISO-8601 end of the window.', required: true }),
     rollup: Flags.string({ description: 'Bucket size.', options: ['hour', 'day'], default: 'day' }),
     model: Flags.string({ description: 'Filter by model identifier.' }),
+    'user-email': Flags.string({ description: 'Filter by acting-user email (repeatable).', multiple: true }),
   }
 
   async run(): Promise<void> {
@@ -23,6 +24,7 @@ export default class UsageList extends BaseCommand<typeof UsageList> {
       until: this.flags.until,
       rollup: this.flags.rollup as 'hour' | 'day',
       model: this.flags.model,
+      userEmail: this.flags['user-email'],
     })
     this.print(report, () => JSON.stringify(report, null, 2))
   }

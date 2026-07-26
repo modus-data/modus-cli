@@ -1,16 +1,23 @@
 import type { Page } from '@getmodus/sdk'
 
+// Confirmed against real staging data: untruncated free-text fields (e.g. context
+// item descriptions) make a --pretty table unreadable — cap and ellipsize.
+const MAX_CELL_WIDTH = 60
+
 function cellText(value: unknown): string {
   if (value === null || value === undefined) return ''
-  if (typeof value === 'object') return JSON.stringify(value)
-  return String(value)
+  const raw = typeof value === 'object' ? JSON.stringify(value) : String(value)
+  // Confirmed against real staging data: a field like firstMessage can contain
+  // embedded newlines, which breaks single-line row alignment — flatten first.
+  const text = raw.replace(/\s*\n\s*/g, ' ')
+  return text.length > MAX_CELL_WIDTH ? `${text.slice(0, MAX_CELL_WIDTH - 1)}…` : text
 }
 
 /**
  * ponytail: one generic key-based table renderer for every resource instead of
  * a bespoke pretty-printer per command. Callers pass which columns matter;
- * add per-resource formatting (colors, truncation) only if this stops reading
- * well in practice.
+ * add per-resource formatting (colors, custom widths) only if this stops
+ * reading well in practice.
  */
 export function renderTable(rows: Array<Record<string, unknown>>, columns: string[]): string {
   if (rows.length === 0) return '(no results)'

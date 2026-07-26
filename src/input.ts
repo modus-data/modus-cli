@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises'
+import { ValidationError } from '@getmodus/sdk'
 
 async function readStdin(): Promise<string> {
   const chunks: Buffer[] = []
@@ -17,6 +18,11 @@ export async function readJsonBody(options: {
   if (options.body === '-') {
     const raw = await readStdin()
     return raw.trim() ? (JSON.parse(raw) as Record<string, unknown>) : {}
+  }
+  if (options.body !== undefined) {
+    // --body only accepts the literal '-' (stdin) — inline JSON on the flag would
+    // otherwise be silently dropped here, sending a near-empty body with no error.
+    throw new ValidationError(`--body only accepts '-' (read JSON from stdin), got '${options.body}'.`)
   }
   return {}
 }

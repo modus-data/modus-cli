@@ -6,7 +6,13 @@ import { OPERATIONS } from './operation-coverage.js'
 
 const HTTP_METHODS = new Set(['get', 'post', 'put', 'patch', 'delete'])
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../../../../..')
-const SPEC_PATH = resolve(REPO_ROOT, 'apps/services/modus-api/openapi/v1.json')
+// Two independent public services, two independent specs — chat/run streaming
+// (agent-service) was missed entirely in the CLI's first pass because only
+// modus-api's spec was ever audited. Both must be checked here.
+const SPEC_PATHS = [
+  resolve(REPO_ROOT, 'apps/services/modus-api/openapi/v1.json'),
+  resolve(REPO_ROOT, 'apps/services/agent-service/openapi/v1.json'),
+]
 
 interface OpenApiSpec {
   paths: Record<string, Record<string, { operationId?: string }>>
@@ -23,9 +29,10 @@ function operationIds(spec: OpenApiSpec): string[] {
 }
 
 describe('CLI operation coverage', () => {
-  it('accounts for every public operationId in openapi/v1.json, and nothing else', () => {
-    const spec = JSON.parse(readFileSync(SPEC_PATH, 'utf8')) as OpenApiSpec
-    const specIds = new Set(operationIds(spec))
+  it('accounts for every public operationId in both public specs (modus-api + agent-service), and nothing else', () => {
+    const specIds = new Set(
+      SPEC_PATHS.flatMap((path) => operationIds(JSON.parse(readFileSync(path, 'utf8')) as OpenApiSpec)),
+    )
     const missing = [...specIds].filter((id) => !(id in OPERATIONS))
     const stale = Object.keys(OPERATIONS).filter((id) => !specIds.has(id))
     expect(missing, `Uncovered operations (add to operation-coverage.ts, even as "phase 2 — pending"): ${missing.join(', ')}`).toEqual([])

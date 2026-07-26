@@ -2,6 +2,7 @@ import { Args, Flags } from '@oclif/core'
 import type { RunStatus } from '@getmodus/sdk'
 import { BaseCommand } from '../../../base-command.js'
 import { pageEnvelope, renderPage } from '../../../output.js'
+import { checkPageSize } from '../../../validation.js'
 
 export default class WorkflowsRunsList extends BaseCommand<typeof WorkflowsRunsList> {
   static description = "List a workflow's past runs."
@@ -19,6 +20,7 @@ export default class WorkflowsRunsList extends BaseCommand<typeof WorkflowsRunsL
   }
 
   async run(): Promise<void> {
+    checkPageSize(this.flags['page-size'], 100)
     const client = await this.modusClient()
     const page = await client.workflows.runs.list(this.args.id, {
       status: this.flags.status as RunStatus | undefined,

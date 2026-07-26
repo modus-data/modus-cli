@@ -1,6 +1,7 @@
 import { Args, Flags } from '@oclif/core'
 import type { ChatModel, Modus } from '@getmodus/sdk'
 import { BaseCommand } from '../../base-command.js'
+import { runInteractiveChat } from '../../chat-repl.js'
 
 const DEFAULT_MODEL = 'claude-sonnet-5'
 
@@ -15,9 +16,12 @@ export default class ScopesChat extends BaseCommand<typeof ScopesChat> {
 
   static args = {
     id: Args.string({ description: 'Scope id.', required: true }),
+    // ignoreStdin: oclif auto-fills an unmatched positional arg from piped stdin
+    // by default, which would swallow the REPL's own stdin before it ever runs.
     message: Args.string({
       description: 'Message to send (quote it). Omit to start an interactive REPL.',
       required: false,
+      ignoreStdin: true,
     }),
   }
 
@@ -34,7 +38,11 @@ export default class ScopesChat extends BaseCommand<typeof ScopesChat> {
       await this.sendOneShot(client, this.args.id, this.args.message, this.flags.thread)
       return
     }
-    await this.repl(client, this.args.id, this.flags.thread)
+    await runInteractiveChat(
+      (message) => this.log(message),
+      (message, threadId) => this.sendOneShot(client, this.args.id, message, threadId),
+      this.flags.thread,
+    )
   }
 
   private async sendOneShot(
@@ -56,26 +64,5 @@ export default class ScopesChat extends BaseCommand<typeof ScopesChat> {
       nextThreadId = stream.getFinalResult().threadId
     }
     return nextThreadId
-  }
-
-  private async repl(client: Modus, scopeId: string, initialThreadId: string | undefined): Promise<void> {
-    const { createInterface } = await import('node:readline/promises')
-    const rl = createInterface({ input: process.stdin, output: process.stdout })
-    let threadId = initialThreadId
-    this.log('Interactive chat. Ctrl+D or "exit" to quit.')
-    try {
-      for (;;) {
-        let line: string
-        try {
-          line = await rl.question('> ')
-        } catch {
-          break // stdin closed (Ctrl+D)
-        }
-        if (!line.trim() || line.trim() === 'exit') break
-        threadId = (await this.sendOneShot(client, scopeId, line, threadId)) ?? threadId
-      }
-    } finally {
-      rl.close()
-    }
   }
 }

@@ -35,6 +35,8 @@ export async function promptHidden(query: string): Promise<string> {
       stdin.setRawMode(false)
       stdin.pause()
       stdin.removeListener('data', onData)
+      process.removeListener('SIGINT', onSignal)
+      process.removeListener('SIGTERM', onSignal)
       action()
     }
     // A single `data` event can carry more than one character (paste, fast typing,
@@ -58,6 +60,16 @@ export async function promptHidden(query: string): Promise<string> {
         }
       }
     }
+    // An external signal (not a literal Ctrl+C byte read via `data`) would otherwise
+    // hit Node's default handler and exit while raw mode is still on, leaving the
+    // caller's TTY silently un-echoed until they run `stty sane`/`reset`.
+    const onSignal = (): void => {
+      finish(() => {
+        process.exit(process.exitCode ?? 130)
+      })
+    }
     stdin.on('data', onData)
+    process.on('SIGINT', onSignal)
+    process.on('SIGTERM', onSignal)
   })
 }

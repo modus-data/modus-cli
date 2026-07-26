@@ -9,7 +9,7 @@ export default class Login extends BaseCommand<typeof Login> {
 
   static examples = [
     '<%= config.bin %> login',
-    '<%= config.bin %> login --token modus_<orgUuid>_<prefix>_<secret>',
+    '<%= config.bin %> login --token modus_pat_<orgUuid>_<prefix>_<secret>',
   ]
 
   static flags = {

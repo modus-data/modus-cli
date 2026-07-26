@@ -29,6 +29,13 @@ readable from shell history, `ps`, and often CI logs. If you must automate
 login non-interactively, pipe the token to stdin of the hidden prompt or set
 `MODUS_API_KEY` instead.
 
+**Testing against a non-default environment (e.g. staging):** `chat`, `scopes
+chat`, and their conversation-continuation calls route through the agent
+service, not the REST API — set `MODUS_AGENT_HOST` (e.g.
+`https://agent.staging.getmodus.com`) alongside `MODUS_BASE_URL`, or those
+commands silently hit the production agent host with a token scoped to a
+different environment and fail with "Invalid access token".
+
 ## Output
 
 Every non-streaming command prints **compact JSON by default** — pipe it to
@@ -71,6 +78,11 @@ modus workflows runs get 7 wf_7_run_1
 # Manage context
 modus context items list --context-type saved_query
 modus context notes create "Q3 pricing" "We raised list price 8% in July."
+
+# Trigger a workflow run now (ad-hoc), and manage it
+modus workflows run 42 "Run the weekly digest now"
+modus runs list-active --pretty
+modus runs cancel <runId>
 ```
 
 ## Commands
@@ -81,8 +93,12 @@ the full, current list — this README does not duplicate it since it drifts.
 ## Phasing
 
 This is a **Phase 1** release: auth, scopes, workflows, context, connections,
-usage, and chat. Evaluations, memories, supervision, MCP config, ownership
-transfer, suggestions, and the org member directory are Phase 2 — see
+usage, chat, and run creation/lifecycle (`workflows run`, `runs *`). Note that
+`api.getmodus.com` (modus-api) and `agent.getmodus.com` (agent-service) are two
+independent public services with two independent OpenAPI specs — the CLI's
+coverage tracks both. Evaluations, memories, supervision, MCP config, ownership
+transfer, suggestions, the org member directory, and workflow-action execution
+are Phase 2 — see
 [`tests/contract/operation-coverage.ts`](tests/contract/operation-coverage.ts)
 for the exact operation-by-operation status.
 

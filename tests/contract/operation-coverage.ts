@@ -76,7 +76,7 @@ export const OPERATIONS: Record<string, string> = {
 
   // --- Usage ---
   UsageController_list: 'modus usage list',
-  UsageController_listUsers: 'phase 2 — pending',
+  UsageController_listUsers: 'modus usage list-users',
 
   // --- Tools ---
   ToolsController_list: 'modus tools list',
@@ -104,4 +104,23 @@ export const OPERATIONS: Record<string, string> = {
   WorkflowsController_requestOwnershipTransfer: 'phase 2 — pending',
   WorkflowsController_cancelOwnershipTransfer: 'phase 2 — pending',
   WorkflowsController_acceptOwnershipTransfer: 'phase 2 — pending',
+
+  // --- Agent-service (run creation & lifecycle) — separate public spec from
+  // modus-api, missed entirely in the CLI's first coverage pass. ScopeRunsController_create
+  // and ModusRunsController_create are the same underlying endpoints `scopes chat`/`chat`
+  // already hit via chatStream() (verified: identical agentHostRunsPath construction) —
+  // marked covered there rather than duplicated as a separate command.
+  ScopeRunsController_create: 'modus scopes chat <id> "message" (same endpoint as chatStream)',
+  ModusRunsController_create: 'modus chat "message" (same endpoint as chatStream)',
+  WorkflowRunsController_create: 'modus workflows run',
+  ResumeRunsController_create: 'modus runs resume',
+  RunLifecycleController_active: 'modus runs list-active',
+  RunLifecycleController_activeBySession: 'modus runs active-by-session',
+  RunLifecycleController_cancel: 'modus runs cancel',
+  RunLifecycleController_events: 'modus runs events',
+  RunLifecycleController_interrupt: 'modus runs interrupt',
+  RunLifecycleController_editQueued: 'modus runs edit-queued',
+  RunLifecycleController_stream: 'modus runs stream',
+  WorkflowActionsController_execute: 'phase 2 — pending',
+  WorkflowActionsController_cancel: 'phase 2 — pending',
 }
