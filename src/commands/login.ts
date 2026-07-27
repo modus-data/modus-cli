@@ -2,7 +2,7 @@ import { Flags } from '@oclif/core'
 import { AuthenticationError, Modus } from '@getmodus/sdk'
 import { BaseCommand } from '../base-command.js'
 import { maskToken, parseOrgUuidFromToken, writeStoredConfig } from '../config.js'
-import { MODUS_LOGO } from '../logo.js'
+import { MODUS_LOGO, renderLogoImage } from '../logo.js'
 import {
   buildAuthorizeUrl,
   deriveIssuer,
@@ -52,6 +52,10 @@ export default class Login extends BaseCommand<typeof Login> {
   }
 
   async run(): Promise<void> {
+    const logoImage = renderLogoImage()
+    if (logoImage) process.stderr.write(`${logoImage}\n`)
+    process.stderr.write(`${MODUS_LOGO}\n\n`)
+
     const wantsToken = this.flags.token !== undefined || this.flags.oauth === false
     if (wantsToken) return this.runTokenLogin()
     return this.runOAuthLogin()
@@ -109,7 +113,6 @@ export default class Login extends BaseCommand<typeof Login> {
         state,
       })
 
-      process.stderr.write(`${MODUS_LOGO}\n\n`)
       process.stderr.write(`Opening your browser to sign in…\nIf it doesn't open, visit:\n${authorizeUrl}\n`)
       openBrowser(authorizeUrl)
       process.stderr.write('Waiting for you to finish signing in in your browser…\n')
