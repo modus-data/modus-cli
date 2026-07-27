@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="360" viewBox="0 0 760 360">
+  <defs>
+    <style>
+      .chrome { fill: #21262d; }
+      .bg { fill: #0d1117; }
+      .dot { r: 6; }
+      .txt {
+        font-family: "SFMono-Regular", "Menlo", "Consolas", ui-monospace, monospace;
+        font-size: 14px;
+        white-space: pre;
+      }
+      .prompt { fill: #8b949e; }
+      .cmd { fill: #e6edf3; }
+      .banner { fill: #22d3ee; }
+      .dim { fill: #8b949e; }
+      .ok { fill: #3fb950; }
+      .tagline { fill: #c9d1d9; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="760" height="360" rx="10" />
+  <rect class="chrome" width="760" height="34" rx="10" />
+  <rect class="chrome" x="0" y="24" width="760" height="10" />
+  <circle class="dot" cx="22" cy="17" fill="#ff5f56" />
+  <circle class="dot" cx="42" cy="17" fill="#ffbd2e" />
+  <circle class="dot" cx="62" cy="17" fill="#27c93f" />
+  <text x="380" y="21" text-anchor="middle" font-family="SFMono-Regular, Menlo, monospace" font-size="12" fill="#8b949e">modus</text>
+
+  <text class="txt" x="20" y="64">
+    <tspan class="prompt">$ </tspan><tspan class="cmd">modus login</tspan>
+  </text>
+
+  <text class="txt banner" x="20" y="96" xml:space="preserve">███╗   ███╗ ██████╗ ██████╗ ██╗   ██╗███████╗</text>
+  <text class="txt banner" x="20" y="114" xml:space="preserve">████╗ ████║██╔═══██╗██╔══██╗██║   ██║██╔════╝</text>
+  <text class="txt banner" x="20" y="132" xml:space="preserve">██╔████╔██║██║   ██║██║  ██║██║   ██║███████╗</text>
+  <text class="txt banner" x="20" y="150" xml:space="preserve">██║╚██╔╝██║██║   ██║██║  ██║██║   ██║╚════██║</text>
+  <text class="txt banner" x="20" y="168" xml:space="preserve">██║ ╚═╝ ██║╚██████╔╝██████╔╝╚██████╔╝███████║</text>
+  <text class="txt banner" x="20" y="186" xml:space="preserve">╚═╝     ╚═╝ ╚═════╝ ╚═════╝  ╚═════╝ ╚══════╝</text>
+
+  <text class="txt" x="20" y="220" xml:space="preserve"><tspan class="ok">✓</tspan><tspan class="cmd"> Signed in to Modus</tspan></text>
+
+  <text class="txt tagline" x="20" y="252">Your organization's context layer for AI — chat with scopes,</text>
+  <text class="txt tagline" x="20" y="272">run workflows, and query context, right from your terminal.</text>
+
+  <text class="txt prompt" x="20" y="316">$</text>
+</svg>

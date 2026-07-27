@@ -20,6 +20,14 @@
   <a href="https://opensource.org/licenses/MIT"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-blue.svg"></a>
 </p>
 
+<p align="center">
+  <img
+    src="https://raw.githubusercontent.com/modus-data/modus-cli/main/assets/login-demo.svg"
+    alt="modus login"
+    width="600"
+  />
+</p>
+
 ---
 
 ## Quick start
