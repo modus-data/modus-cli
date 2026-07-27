@@ -25,11 +25,28 @@
 ## Quick start
 
 ```bash
-npm install -g @getmodus/cli
+npm install -g @getmodus/cli   # the -g is required — without it, `modus` won't be on your PATH
 
 modus login                  # opens your browser to sign in
 modus scopes list --pretty   # confirm it worked
 ```
+
+<details>
+<summary><strong>Getting a permission error (EACCES)?</strong></summary>
+
+Your npm install prefix isn't writable by your user — common when Node was
+installed via an OS installer rather than a version manager. Point npm at a
+directory you own instead of using `sudo`:
+
+```bash
+mkdir -p ~/.npm-global
+npm config set prefix ~/.npm-global
+echo 'export PATH="$HOME/.npm-global/bin:$PATH"' >> ~/.zshrc   # zsh — use ~/.bashrc if you're on bash
+source ~/.zshrc                                                # or: source ~/.bashrc
+npm install -g @getmodus/cli
+```
+
+</details>
 
 ## Authenticate
 

@@ -138,9 +138,11 @@ function escapeHtml(input: string): string {
  * doesn't hang on a blank response even though it never auto-closes (no JS
  * origin to script `window.close()` from, unlike the SPA's own /oauth/complete).
  */
+const CALLBACK_TIMEOUT_MS = 5 * 60 * 1000
+
 export function startLoopbackServer(): Promise<{
   redirectUri: string
-  waitForCallback: () => Promise<CallbackResult>
+  waitForCallback: (timeoutMs?: number) => Promise<CallbackResult>
   close: () => void
 }> {
   return new Promise((resolve, reject) => {
@@ -180,9 +182,18 @@ export function startLoopbackServer(): Promise<{
       const redirectUri = `http://127.0.0.1:${address.port}/callback`
       resolve({
         redirectUri,
-        waitForCallback: () =>
+        waitForCallback: (timeoutMs = CALLBACK_TIMEOUT_MS) =>
           new Promise<CallbackResult>((resolveCallback, rejectCallback) => {
+            const timer = setTimeout(() => {
+              rejectCallback(
+                new ValidationError(
+                  `Timed out waiting for the browser sign-in to complete (${Math.round(timeoutMs / 1000)}s). Run \`modus login\` again.`,
+                ),
+              )
+            }, timeoutMs)
+            timer.unref()
             onCallback = (result) => {
+              clearTimeout(timer)
               if ('error' in result) rejectCallback(result.error)
               else resolveCallback(result)
             }

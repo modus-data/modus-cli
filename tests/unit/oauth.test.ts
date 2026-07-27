@@ -147,6 +147,15 @@ describe('startLoopbackServer', () => {
       server.close()
     }
   })
+
+  it('rejects waitForCallback if no redirect ever arrives before the timeout', async () => {
+    const server = await startLoopbackServer()
+    try {
+      await expect(server.waitForCallback(50)).rejects.toThrow(/Timed out waiting/)
+    } finally {
+      server.close()
+    }
+  })
 })
 
 describe('fetch-based OAuth calls', () => {
