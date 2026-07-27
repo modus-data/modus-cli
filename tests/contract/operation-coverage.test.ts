@@ -35,7 +35,20 @@ describe('CLI operation coverage', () => {
     )
     const missing = [...specIds].filter((id) => !(id in OPERATIONS))
     const stale = Object.keys(OPERATIONS).filter((id) => !specIds.has(id))
-    expect(missing, `Uncovered operations (add to operation-coverage.ts, even as "phase 2 — pending"): ${missing.join(', ')}`).toEqual([])
-    expect(stale, `Stale entries in operation-coverage.ts (operationId removed/renamed in the spec): ${stale.join(', ')}`).toEqual([])
+    expect(
+      missing,
+      `Uncovered operations (add to operation-coverage.ts as 'mapped' or 'excluded'): ${missing.join(', ')}`,
+    ).toEqual([])
+    expect(stale, `Stale entries in operation-coverage.ts (operationId removed/renamed in the spec): ${stale.join(', ')}`).toEqual(
+      [],
+    )
+  })
+
+  it('requires every excluded entry to cite a CU ticket', () => {
+    const badExclusions = Object.entries(OPERATIONS)
+      .filter(([, entry]) => entry.status === 'excluded')
+      .filter(([, entry]) => !/^CU-\w+$/.test((entry as { ticket: string }).ticket))
+      .map(([id]) => id)
+    expect(badExclusions, `Excluded entries missing a well-formed CU-XXXXXXXXX ticket: ${badExclusions.join(', ')}`).toEqual([])
   })
 })
