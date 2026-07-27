@@ -43,9 +43,8 @@ modus whoami             # confirm the resolved org/token/auth method
   account already has in the Modus web app — nothing more, nothing held back.
   The access token refreshes automatically; `modus logout` revokes it
   server-side.
-- **CI/scripts:** set `MODUS_API_KEY` and `MODUS_BASE_URL` — these always
-  override the stored credential and are the preferred way to authenticate
-  non-interactively.
+- **CI/scripts:** set `MODUS_API_KEY` — it always overrides the stored
+  credential and is the preferred way to authenticate non-interactively.
 - Avoid `modus login --token modus_xxx` — a token on the command line is
   readable from shell history, `ps`, and CI logs.
 
