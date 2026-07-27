@@ -277,8 +277,10 @@ export function startLoopbackServer(): Promise<{
         // server.close() alone only stops accepting *new* connections — an
         // already-open keep-alive socket from the browser's callback request
         // stays open and keeps the process alive indefinitely. Force-close it.
+        // `closeAllConnections` landed in Node 18.2.0; `engines.node` here only
+        // floors at 18, so guard rather than assume it exists.
         close: () => {
-          server.closeAllConnections()
+          server.closeAllConnections?.()
           server.close()
         },
       })
