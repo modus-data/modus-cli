@@ -4,6 +4,7 @@ import type { Server } from 'node:http'
 import { spawn } from 'node:child_process'
 import { platform } from 'node:process'
 import { ValidationError } from '@getmodus/sdk'
+import { MODUS_LOGO_PNG_BASE64 } from './logo.js'
 
 const SOFTWARE_ID = 'com.modus.cli'
 
@@ -132,6 +133,77 @@ function escapeHtml(input: string): string {
 }
 
 /**
+ * The callback page's HTML — `detail` must already be HTML-escaped by the
+ * caller (it's built from an attacker-influenceable query param).
+ */
+function renderCallbackPage(opts: { success: boolean; message: string; detail?: string }): string {
+  const accent = opts.success ? '#22c55e' : '#ef4444'
+  const iconPath = opts.success
+    ? '<path d="M7 12.5l3 3 7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>'
+    : '<path d="M8 8l8 8M16 8l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>'
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Modus CLI</title>
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #0b0d12;
+    color: #e6e8eb;
+  }
+  @media (prefers-color-scheme: light) {
+    body { background: #f5f6f8; color: #14161a; }
+  }
+  .card {
+    text-align: center;
+    padding: 2.5rem 3rem;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.04);
+    max-width: 420px;
+  }
+  @media (prefers-color-scheme: light) {
+    .card { background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.06); }
+  }
+  .card img { width: 150px; margin-bottom: 1.75rem; }
+  .status { color: ${accent}; margin-bottom: 0.75rem; }
+  h1 { font-size: 1.2rem; margin: 0 0 0.5rem; font-weight: 600; }
+  p { margin: 0; opacity: 0.65; font-size: 0.95rem; line-height: 1.5; }
+  .detail {
+    color: ${accent};
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.8rem;
+    margin-top: 1rem;
+    opacity: 0.9;
+    word-break: break-word;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <img src="data:image/png;base64,${MODUS_LOGO_PNG_BASE64}" alt="Modus" />
+    <div class="status">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="11" stroke="currentColor" stroke-width="1.5" opacity="0.3" />
+        ${iconPath}
+      </svg>
+    </div>
+    <h1>${opts.message}</h1>
+    <p>You can close this tab and return to your terminal.</p>
+    ${opts.detail ? `<div class="detail">${opts.detail}</div>` : ''}
+  </div>
+</body>
+</html>`
+}
+
+/**
  * Starts a loopback HTTP server (RFC 8252 §7.3 — port MAY vary, host must be
  * 127.0.0.1) and resolves with the authorization code once the browser
  * redirects back. Serves a static human-readable page so the browser tab
@@ -156,18 +228,22 @@ export function startLoopbackServer(): Promise<{
       const code = url.searchParams.get('code')
       const state = url.searchParams.get('state')
       const error = url.searchParams.get('error')
+      // Keep-alive is the browser's default for HTTP/1.1 requests — without this
+      // header the socket stays open after res.end(), which keeps Node's event
+      // loop alive and the CLI process hanging even after everything else is
+      // done. server.closeAllConnections() (below) is the belt-and-braces
+      // backstop; this header avoids relying on it in the common case.
+      res.setHeader('Connection', 'close')
       res.writeHead(200, { 'Content-Type': 'text/html' })
       if (error) {
         // error is an attacker-influenceable query param (this loopback server is
         // reachable from any local process during the flow) — escape before
         // reflecting it into HTML, never interpolate it raw.
-        res.end(
-          `<html><body><h1>Modus CLI login failed</h1><p>${escapeHtml(error)}</p><p>You can close this tab.</p></body></html>`,
-        )
+        res.end(renderCallbackPage({ success: false, message: 'Sign-in failed', detail: escapeHtml(error) }))
         onCallback?.({ error: new ValidationError(`OAuth authorization failed: ${error}`) })
         return
       }
-      res.end('<html><body><h1>Modus CLI login successful</h1><p>You can close this tab and return to the terminal.</p></body></html>')
+      res.end(renderCallbackPage({ success: true, message: 'Signed in to Modus' }))
       if (code && state) {
         onCallback?.({ code, state, iss: url.searchParams.get('iss') ?? undefined })
       }
@@ -198,7 +274,13 @@ export function startLoopbackServer(): Promise<{
               else resolveCallback(result)
             }
           }),
-        close: () => server.close(),
+        // server.close() alone only stops accepting *new* connections — an
+        // already-open keep-alive socket from the browser's callback request
+        // stays open and keeps the process alive indefinitely. Force-close it.
+        close: () => {
+          server.closeAllConnections()
+          server.close()
+        },
       })
     })
   })
