@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="760" height="388" viewBox="0 0 760 388">
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="360" viewBox="0 0 760 360">
   <defs>
     <style>
       .chrome { fill: #21262d; }
@@ -18,7 +18,7 @@
     </style>
   </defs>
 
-  <rect class="bg" width="760" height="388" rx="10" />
+  <rect class="bg" width="760" height="360" rx="10" />
   <rect class="chrome" width="760" height="34" rx="10" />
   <rect class="chrome" x="0" y="24" width="760" height="10" />
   <circle class="dot" cx="22" cy="17" fill="#ff5f56" />
@@ -37,13 +37,10 @@
   <text class="txt banner" x="20" y="168" xml:space="preserve">██║ ╚═╝ ██║╚██████╔╝██████╔╝╚██████╔╝███████║</text>
   <text class="txt banner" x="20" y="186" xml:space="preserve">╚═╝     ╚═╝ ╚═════╝ ╚═════╝  ╚═════╝ ╚══════╝</text>
 
-  <text class="txt dim" x="20" y="214" xml:space="preserve">Opening your browser to sign in…</text>
-  <text class="txt dim" x="20" y="234" xml:space="preserve">Waiting for you to finish signing in in your browser…</text>
+  <text class="txt" x="20" y="220" xml:space="preserve"><tspan class="ok">✓</tspan><tspan class="cmd"> Signed in to Modus</tspan></text>
 
-  <text class="txt" x="20" y="264" xml:space="preserve"><tspan class="ok">✓</tspan><tspan class="cmd"> Logged in via OAuth (org 8f2c1a90-4b3d-4e21-9f6a-2d7c9b1e5a44, scopes: read write chat).</tspan></text>
+  <text class="txt tagline" x="20" y="252">Your organization's context layer for AI — chat with scopes,</text>
+  <text class="txt tagline" x="20" y="272">run workflows, and query context, right from your terminal.</text>
 
-  <text class="txt tagline" x="20" y="296">Your organization's context layer for AI — chat with scopes,</text>
-  <text class="txt tagline" x="20" y="316">run workflows, and query context, right from your terminal.</text>
-
-  <text class="txt prompt" x="20" y="344">$</text>
+  <text class="txt prompt" x="20" y="316">$</text>
 </svg>
