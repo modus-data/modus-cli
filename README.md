@@ -33,7 +33,11 @@
 ## Quick start
 
 ```bash
+# npm
 npm install -g @getmodus/cli   # the -g is required — without it, `modus` won't be on your PATH
+
+# or Homebrew (macOS/Linux) — no npm/Node.js required beforehand
+brew install modus-data/tap/modus-cli
 
 modus login                  # opens your browser to sign in
 modus scopes list --pretty   # confirm it worked
