@@ -39,12 +39,18 @@
     "plugins": ["@oclif/plugin-help"],
     "topicSeparator": " ",
     "topics": {
-      "scopes": { "description": "Chat with, create, and manage Modus scopes" },
-      "workflows": { "description": "Create, deploy, and manage Modus workflows" },
-      "context": { "description": "Read and manage organization context items" },
+      "scopes": { "description": "Chat with, create, deploy, and manage Modus scopes" },
+      "workflows": { "description": "Create, deploy, run, and manage Modus workflows" },
+      "context": { "description": "Read and manage organization context items, notes, and saved queries" },
       "connections": { "description": "List integration connections" },
-      "usage": { "description": "Inspect organization usage" },
-      "conversations": { "description": "List and read Modus/scope conversation threads" }
+      "tools": { "description": "List tools available to scopes (requires a published SDK with management.tools)" },
+      "usage": { "description": "Inspect organization usage and per-user breakdowns" },
+      "conversations": { "description": "List and read Modus/scope conversation threads" },
+      "runs": { "description": "Inspect and resume workflow or chat runs" },
+      "workflow-actions": { "description": "Execute workflow actions by name" },
+      "suggestions": { "description": "List and record suggestion events" },
+      "member-groups": { "description": "List organization member groups" },
+      "org-members": { "description": "List organization members" }
     }
   },
   "scripts": {

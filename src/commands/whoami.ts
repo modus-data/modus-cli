@@ -5,6 +5,8 @@ export default class Whoami extends BaseCommand<typeof Whoami> {
   static description =
     'Show the org and token resolved from the active credential (no API call — no /me endpoint exists).'
 
+  static examples = ['<%= config.bin %> whoami', '<%= config.bin %> whoami --pretty']
+
   static flags = { ...BaseCommand.baseFlags }
 
   async run(): Promise<void> {

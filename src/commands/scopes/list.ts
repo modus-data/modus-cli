@@ -4,7 +4,13 @@ import { pageEnvelope, renderPage } from '../../output.js'
 import { checkPageSize } from '../../validation.js'
 
 export default class ScopesList extends BaseCommand<typeof ScopesList> {
-  static description = 'List scopes.'
+  static description = 'List scopes in the authenticated organization.'
+
+  static examples = [
+    '<%= config.bin %> scopes list',
+    '<%= config.bin %> scopes list --pretty',
+    '<%= config.bin %> scopes list --search revenue',
+  ]
 
   static flags = {
     ...BaseCommand.baseFlags,

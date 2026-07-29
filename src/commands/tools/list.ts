@@ -3,9 +3,10 @@ import { BaseCommand } from '../../base-command.js'
 import { pageEnvelope, renderPage } from '../../output.js'
 
 export default class ToolsList extends BaseCommand<typeof ToolsList> {
-  static description = 'List tool/integration surfaces a scope can select in its toolset.'
+  static description =
+    'List tool/integration surfaces a scope can select in its toolset. Requires a published @getmodus/sdk that exposes ModusManagement.tools.'
 
-  static examples = ['<%= config.bin %> tools list']
+  static examples = ['<%= config.bin %> tools list', '<%= config.bin %> tools list --pretty']
 
   static flags = {
     ...BaseCommand.baseFlags,

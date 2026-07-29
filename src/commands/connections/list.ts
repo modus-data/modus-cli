@@ -6,6 +6,12 @@ import { checkPageSize } from '../../validation.js'
 export default class ConnectionsList extends BaseCommand<typeof ConnectionsList> {
   static description = 'List integration connections the caller can use.'
 
+  static examples = [
+    '<%= config.bin %> connections list',
+    '<%= config.bin %> connections list --pretty',
+    '<%= config.bin %> connections list --type bigquery',
+  ]
+
   static flags = {
     ...BaseCommand.baseFlags,
     type: Flags.string({ description: 'Filter by integration category (e.g. postgresql, bigquery).' }),

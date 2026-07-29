@@ -4,7 +4,13 @@ import { pageEnvelope, renderPage } from '../../../output.js'
 import { checkPageSize } from '../../../validation.js'
 
 export default class ContextItemsList extends BaseCommand<typeof ContextItemsList> {
-  static description = 'List organization context items.'
+  static description = 'List organization context items (notes, links, saved queries, and more).'
+
+  static examples = [
+    '<%= config.bin %> context items list',
+    '<%= config.bin %> context items list --pretty',
+    '<%= config.bin %> context items list --context-type note',
+  ]
 
   static flags = {
     ...BaseCommand.baseFlags,

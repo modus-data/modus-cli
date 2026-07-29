@@ -77,6 +77,31 @@ modus whoami             # confirm the resolved org/token/auth method
 - Avoid `modus login --token modus_xxx` — a token on the command line is
   readable from shell history, `ps`, and CI logs.
 
+### Staging (and other non-prod)
+
+Point the CLI at staging with a staging PAT and `MODUS_BASE_URL`. Chat uses a
+separate agent host; for Modus-owned `api.getmodus.com` /
+`api.<env>.getmodus.com` origins the CLI/SDK derive `agent.*` automatically
+(`api.staging…` → `agent.staging…`), so you only need one URL:
+
+```bash
+# Replace with your own staging PAT from the staging Modus app → Settings → API Tokens
+export MODUS_API_KEY='modus_<orgUuid>_<prefix>_<secret>'
+export MODUS_BASE_URL='https://api.staging.getmodus.com'
+
+modus whoami --pretty
+modus scopes list --pretty
+modus scopes chat 42 "what can you do?"
+```
+
+Or persist via login:
+
+```bash
+modus login --no-oauth --base-url https://api.staging.getmodus.com
+```
+
+Escape hatch for custom origins: set `MODUS_AGENT_HOST` explicitly.
+
 ## Output
 
 - Commands that return data print **compact JSON by default** — pipe it to
