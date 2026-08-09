@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { ValidationError } from '@getmodus/sdk'
-import { checkPageSize } from '../../src/validation.js'
+import { checkPageSize, parseIdList } from '../../src/validation.js'
 
 describe('checkPageSize', () => {
   it('allows undefined (flag omitted)', () => {
@@ -25,5 +25,44 @@ describe('checkPageSize', () => {
 
   it('rejects a non-integer', () => {
     expect(() => checkPageSize(1.5, 100)).toThrow(ValidationError)
+  })
+})
+
+describe('parseIdList', () => {
+  it('parses a valid CSV list of integers', () => {
+    expect(parseIdList('1,2,3', 'scope-ids')).toEqual([1, 2, 3])
+  })
+
+  it('trims whitespace around values', () => {
+    expect(parseIdList(' 1 , 2 , 3 ', 'scope-ids')).toEqual([1, 2, 3])
+  })
+
+  it('rejects a hex value instead of silently coercing it', () => {
+    expect(() => parseIdList('0x10', 'scope-ids')).toThrow(ValidationError)
+    expect(() => parseIdList('0x10', 'scope-ids')).toThrow(/scope-ids/)
+  })
+
+  it('rejects an exponential value instead of silently coercing it', () => {
+    expect(() => parseIdList('1e2', 'scope-ids')).toThrow(ValidationError)
+  })
+
+  it('rejects a decimal value', () => {
+    expect(() => parseIdList('1.5', 'scope-ids')).toThrow(ValidationError)
+  })
+
+  it('rejects a negative value', () => {
+    expect(() => parseIdList('-1', 'scope-ids')).toThrow(ValidationError)
+  })
+
+  it('rejects zero (ids must be positive)', () => {
+    expect(() => parseIdList('0', 'scope-ids')).toThrow(ValidationError)
+  })
+
+  it('rejects a whitespace-only value', () => {
+    expect(() => parseIdList('1,   ,3', 'scope-ids')).toThrow(ValidationError)
+  })
+
+  it('includes the flag name and offending value in the error message', () => {
+    expect(() => parseIdList('1,abc', 'scope-ids')).toThrow(/--scope-ids.*"abc"/)
   })
 })

@@ -1,7 +1,7 @@
 import { Flags } from '@oclif/core'
 import { BaseCommand } from '../../base-command.js'
 import { pageEnvelope, renderPage } from '../../output.js'
-import { checkPageSize } from '../../validation.js'
+import { checkPageSize, parseIdList } from '../../validation.js'
 
 export default class SuggestionsList extends BaseCommand<typeof SuggestionsList> {
   static description = 'List approved Home suggestion questions.'
@@ -19,12 +19,7 @@ export default class SuggestionsList extends BaseCommand<typeof SuggestionsList>
     const client = await this.modusClient()
     const page = await client.suggestions.list({
       scopeId: this.flags['scope-id'],
-      scopeIds: this.flags['scope-ids']?.split(',').map((raw) => {
-        const value = raw.trim()
-        const id = Number(value)
-        if (!value || !Number.isSafeInteger(id)) this.error(`Invalid scope id: ${raw}`, { exit: 3 })
-        return id
-      }),
+      scopeIds: this.flags['scope-ids'] === undefined ? undefined : parseIdList(this.flags['scope-ids'], 'scope-ids'),
       pageSize: this.flags['page-size'],
       pageToken: this.flags['page-token'],
     })
