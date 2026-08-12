@@ -26,6 +26,22 @@ export const OPERATIONS: Record<string, CoverageEntry> = {
   ContextItemsController_listValues: { status: 'mapped', command: 'modus context items values' },
   ContextItemsController_lookup: { status: 'mapped', command: 'modus context items lookup' },
 
+  // --- Context files ---
+  // `modus context files upload <path>` calls the SDK's `upload()` (single file,
+  // ContextFilesController_uploadUrl) or `uploadDir()` (directory, batches through
+  // ContextFilesController_uploadUrls) depending on whether `path` is a file or directory.
+  ContextFilesController_uploadUrl: { status: 'mapped', command: 'modus context files upload <path>' },
+  ContextFilesController_uploadUrls: { status: 'mapped', command: 'modus context files upload <dir>' },
+  // `modus context files upload-from-url <url>` calls `uploadFromUrl()` for one URL, or
+  // `uploadFromUrls()` (ContextFilesController_uploadFromUrls) when repeated with --url for bulk.
+  ContextFilesController_uploadFromUrl: { status: 'mapped', command: 'modus context files upload-from-url <url>' },
+  ContextFilesController_uploadFromUrls: {
+    status: 'mapped',
+    command: 'modus context files upload-from-url <url> --url <url2> ...',
+  },
+  ContextFilesController_get: { status: 'mapped', command: 'modus context files get' },
+  ContextFilesController_list: { status: 'mapped', command: 'modus context files list' },
+
   // --- Custom context items ---
   CustomContextItemsController_list: { status: 'mapped', command: 'modus context custom-items list' },
   CustomContextItemsController_create: { status: 'mapped', command: 'modus context custom-items create' },
