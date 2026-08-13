@@ -18,17 +18,21 @@ function renderUploadDirResult(result: UploadDirResult): string {
 
 export default class ContextFilesUpload extends BaseCommand<typeof ContextFilesUpload> {
   static description =
-    'Upload a local file or directory as durable context. Directories upload every file (recursive by default) with bounded concurrency.'
+    'Upload local files or directories as durable context. Directories upload every file (recursive by default) with bounded concurrency.'
 
   static examples = [
     '<%= config.bin %> context files upload ./report.pdf',
+    '<%= config.bin %> context files upload ./report.pdf ./notes.txt',
+    '<%= config.bin %> context files upload ./docs',
+    '<%= config.bin %> context files upload ./docs ./extra.pdf --concurrency 20',
     '<%= config.bin %> context files upload ./report.pdf --wait-until ready',
-    '<%= config.bin %> context files upload ./docs --concurrency 20',
     '<%= config.bin %> context files upload ./docs --no-recursive',
   ]
 
+  static strict = false
+
   static args = {
-    path: Args.string({ description: 'Path to a local file or directory.', required: true }),
+    path: Args.string({ description: 'Paths to local files or directories.', required: true }),
   }
 
   static flags = {
@@ -38,7 +42,7 @@ export default class ContextFilesUpload extends BaseCommand<typeof ContextFilesU
       default: true,
       allowNo: true,
     }),
-    concurrency: Flags.integer({ description: 'Max concurrent uploads. Directories only.', default: 10 }),
+    concurrency: Flags.integer({ description: 'Max concurrent uploads.', default: 10 }),
     'wait-until': Flags.string({
       description: 'Wait for the upload to reach this status before returning.',
       options: [...WAIT_UNTIL_OPTIONS],
@@ -48,20 +52,51 @@ export default class ContextFilesUpload extends BaseCommand<typeof ContextFilesU
 
   async run(): Promise<void> {
     const waitUntil = this.flags['wait-until'] as WaitUntil
+    const { argv } = await this.parse(ContextFilesUpload)
+    const paths = argv as string[]
     const mgmt = await this.modusManagement()
-    const pathStat = await stat(this.args.path)
 
-    if (pathStat.isDirectory()) {
-      const result = await mgmt.context.files.uploadDir(this.args.path, {
-        recursive: this.flags.recursive,
+    // A single file keeps the original single-resource output; anything else —
+    // several files, a directory, or a mix — reports as a batch.
+    if (paths.length === 1) {
+      const only = paths[0] as string
+      const pathStat = await stat(only)
+      if (!pathStat.isDirectory()) {
+        const file = await mgmt.context.files.upload(only, { waitUntil })
+        this.print(file, () => JSON.stringify(file, null, 2))
+        return
+      }
+    }
+
+    const files: string[] = []
+    const uploaded: UploadDirResult['uploaded'] = []
+    const failed: UploadDirResult['failed'] = []
+    for (const path of paths) {
+      const pathStat = await stat(path)
+      if (pathStat.isDirectory()) {
+        // Directories keep their own walk so --recursive still applies to them.
+        const result = await mgmt.context.files.uploadDir(path, {
+          recursive: this.flags.recursive,
+          concurrency: this.flags.concurrency,
+          waitUntil,
+        })
+        uploaded.push(...result.uploaded)
+        failed.push(...result.failed)
+      } else {
+        files.push(path)
+      }
+    }
+
+    if (files.length > 0) {
+      const result = await mgmt.context.files.uploadFiles(files, {
         concurrency: this.flags.concurrency,
         waitUntil,
       })
-      this.print(result, () => renderUploadDirResult(result))
-      return
+      uploaded.push(...result.uploaded)
+      failed.push(...result.failed)
     }
 
-    const file = await mgmt.context.files.upload(this.args.path, { waitUntil })
-    this.print(file, () => JSON.stringify(file, null, 2))
+    const combined: UploadDirResult = { uploaded, failed }
+    this.print(combined, () => renderUploadDirResult(combined))
   }
 }

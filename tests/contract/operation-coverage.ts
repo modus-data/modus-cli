@@ -27,11 +27,18 @@ export const OPERATIONS: Record<string, CoverageEntry> = {
   ContextItemsController_lookup: { status: 'mapped', command: 'modus context items lookup' },
 
   // --- Context files ---
-  // `modus context files upload <path>` calls the SDK's `upload()` (single file,
-  // ContextFilesController_uploadUrl) or `uploadDir()` (directory, batches through
-  // ContextFilesController_uploadUrls) depending on whether `path` is a file or directory.
+  // `modus context files upload <path...>` accepts any mix of files and
+  // directories. One file goes through the SDK's `upload()`
+  // (ContextFilesController_uploadUrl); anything else batches through
+  // `uploadFiles()` / `uploadDir()` (ContextFilesController_uploadUrls).
+  // Every path then finalizes — one call for a single file, bulk per batch.
   ContextFilesController_uploadUrl: { status: 'mapped', command: 'modus context files upload <path>' },
-  ContextFilesController_uploadUrls: { status: 'mapped', command: 'modus context files upload <dir>' },
+  ContextFilesController_uploadUrls: { status: 'mapped', command: 'modus context files upload <path...>' },
+  ContextFilesController_finalize: { status: 'mapped', command: 'modus context files upload <path>' },
+  ContextFilesController_finalizeMany: {
+    status: 'mapped',
+    command: 'modus context files upload <path...>',
+  },
   // `modus context files upload-from-url <url>` calls `uploadFromUrl()` for one URL, or
   // `uploadFromUrls()` (ContextFilesController_uploadFromUrls) when repeated with --url for bulk.
   ContextFilesController_uploadFromUrl: { status: 'mapped', command: 'modus context files upload-from-url <url>' },
