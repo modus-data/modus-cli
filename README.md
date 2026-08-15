@@ -137,6 +137,10 @@ modus workflows run 42 "Run the weekly digest now"
 # Context
 modus context items list --context-type saved_query
 modus context notes create "Q3 pricing" "We raised list price 8% in July."
+modus context files upload ./report.pdf
+modus context files upload ./docs --wait-until ready
+modus context files upload-from-url https://example.com/report.pdf
+modus context files list --pretty
 
 # Active runs
 modus runs list-active --pretty
@@ -148,7 +152,7 @@ modus runs cancel <runId>
 - **Scopes** — chat, create, deploy, evaluations, memories, supervision, MCP
   configuration, ownership transfer.
 - **Workflows** — create, trigger, run history, ownership transfer.
-- **Context** — organization context items, notes, saved queries.
+- **Context** — organization context items, notes, saved queries, file uploads.
 - **Connections, usage, and org members.**
 
 ## Commands
