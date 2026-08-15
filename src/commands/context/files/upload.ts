@@ -1,4 +1,4 @@
-import { lstat, readdir, stat } from 'node:fs/promises'
+import { readdir, stat } from 'node:fs/promises'
 import { join } from 'node:path'
 import { Args, Flags } from '@oclif/core'
 import type { UploadDirResult, UploadProgress, WaitUntil } from '@getmodus/sdk/management'
@@ -24,7 +24,7 @@ function renderUploadDirResult(result: UploadDirResult): string {
 }
 
 /** Same skip rules as the SDK walk: no hidden names, no symlink follow. */
-async function walkFiles(root: string, recursive: boolean): Promise<string[]> {
+export async function walkFiles(root: string, recursive: boolean): Promise<string[]> {
   const out: string[] = []
   const entries = await readdir(root, { withFileTypes: true })
   for (const entry of entries) {
@@ -40,11 +40,13 @@ async function walkFiles(root: string, recursive: boolean): Promise<string[]> {
   return out
 }
 
-async function collectFiles(paths: readonly string[], recursive: boolean): Promise<string[]> {
+/** Follows symlinks on explicitly-named paths, same as the pre-batch single-file
+ * branch below and the SDK's own `uploadDir` root handling — only entries
+ * *discovered* by walking a directory (see `walkFiles`) skip symlinks. */
+export async function collectFiles(paths: readonly string[], recursive: boolean): Promise<string[]> {
   const files: string[] = []
   for (const path of paths) {
-    const pathStat = await lstat(path)
-    if (pathStat.isSymbolicLink()) continue
+    const pathStat = await stat(path)
     if (pathStat.isDirectory()) files.push(...(await walkFiles(path, recursive)))
     else files.push(path)
   }
