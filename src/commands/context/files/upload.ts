@@ -1,8 +1,15 @@
-import { stat } from 'node:fs/promises'
+import { lstat, readdir, stat } from 'node:fs/promises'
+import { join } from 'node:path'
 import { Args, Flags } from '@oclif/core'
-import type { UploadDirResult, WaitUntil } from '@getmodus/sdk/management'
+import type { UploadDirResult, UploadProgress, WaitUntil } from '@getmodus/sdk/management'
 import { BaseCommand } from '../../../base-command.js'
 import { renderTable } from '../../../output.js'
+import {
+  createProgressThrottleState,
+  formatProgressLine,
+  markProgressReported,
+  shouldReportProgress,
+} from '../../../upload-progress.js'
 
 const WAIT_UNTIL_OPTIONS = ['processing', 'ready'] as const
 
@@ -14,6 +21,34 @@ function renderUploadDirResult(result: UploadDirResult): string {
   if (result.failed.length === 0) return uploadedTable
   const failedTable = renderTable(result.failed as unknown as Array<Record<string, unknown>>, ['path', 'error'])
   return `${uploadedTable}\n\nFailed (${result.failed.length}):\n${failedTable}`
+}
+
+/** Same skip rules as the SDK walk: no hidden names, no symlink follow. */
+async function walkFiles(root: string, recursive: boolean): Promise<string[]> {
+  const out: string[] = []
+  const entries = await readdir(root, { withFileTypes: true })
+  for (const entry of entries) {
+    if (entry.name.startsWith('.')) continue
+    const full = join(root, entry.name)
+    if (entry.isSymbolicLink()) continue
+    if (entry.isDirectory()) {
+      if (recursive) out.push(...(await walkFiles(full, true)))
+      continue
+    }
+    if (entry.isFile()) out.push(full)
+  }
+  return out
+}
+
+async function collectFiles(paths: readonly string[], recursive: boolean): Promise<string[]> {
+  const files: string[] = []
+  for (const path of paths) {
+    const pathStat = await lstat(path)
+    if (pathStat.isSymbolicLink()) continue
+    if (pathStat.isDirectory()) files.push(...(await walkFiles(path, recursive)))
+    else files.push(path)
+  }
+  return files
 }
 
 export default class ContextFilesUpload extends BaseCommand<typeof ContextFilesUpload> {
@@ -57,7 +92,7 @@ export default class ContextFilesUpload extends BaseCommand<typeof ContextFilesU
     const mgmt = await this.modusManagement()
 
     // A single file keeps the original single-resource output; anything else —
-    // several files, a directory, or a mix — reports as a batch.
+    // several files, a directory, or a mix — reports as a batch with progress.
     if (paths.length === 1) {
       const only = paths[0] as string
       const pathStat = await stat(only)
@@ -68,35 +103,47 @@ export default class ContextFilesUpload extends BaseCommand<typeof ContextFilesU
       }
     }
 
-    const files: string[] = []
-    const uploaded: UploadDirResult['uploaded'] = []
-    const failed: UploadDirResult['failed'] = []
-    for (const path of paths) {
-      const pathStat = await stat(path)
-      if (pathStat.isDirectory()) {
-        // Directories keep their own walk so --recursive still applies to them.
-        const result = await mgmt.context.files.uploadDir(path, {
-          recursive: this.flags.recursive,
-          concurrency: this.flags.concurrency,
-          waitUntil,
-        })
-        uploaded.push(...result.uploaded)
-        failed.push(...result.failed)
-      } else {
-        files.push(path)
-      }
+    const files = await collectFiles(paths, this.flags.recursive)
+    process.stderr.write(`Found ${files.length} files to upload.\n`)
+    if (files.length === 0) {
+      this.print({ uploaded: [], failed: [] }, () => 'No files to upload.')
+      return
     }
 
-    if (files.length > 0) {
+    const startedAt = Date.now()
+    const throttle = createProgressThrottleState(startedAt)
+    let last: UploadProgress = { completed: 0, total: files.length, succeeded: 0, failed: 0 }
+    const onProgress = (event: UploadProgress) => {
+      last = event
+      const elapsed = Date.now() - startedAt
+      if (event.completed >= event.total) {
+        process.stderr.write(`${formatProgressLine(event, elapsed)}\n`)
+        return
+      }
+      if (!shouldReportProgress(event, throttle)) return
+      process.stderr.write(`${formatProgressLine(event, elapsed)}\n`)
+      markProgressReported(event, throttle)
+    }
+    // Time-based heartbeat so long PUT/finalize batches still report on stderr
+    // even when the SDK has not emitted a new file outcome yet.
+    const heartbeat = setInterval(() => {
+      if (last.completed >= last.total) return
+      const elapsed = Date.now() - startedAt
+      process.stderr.write(`${formatProgressLine(last, elapsed)}\n`)
+      markProgressReported(last, throttle)
+    }, 30_000)
+
+    try {
       const result = await mgmt.context.files.uploadFiles(files, {
         concurrency: this.flags.concurrency,
         waitUntil,
+        onProgress,
       })
-      uploaded.push(...result.uploaded)
-      failed.push(...result.failed)
-    }
 
-    const combined: UploadDirResult = { uploaded, failed }
-    this.print(combined, () => renderUploadDirResult(combined))
+      this.print(result, () => renderUploadDirResult(result))
+      if (result.failed.length > 0) this.exit(1)
+    } finally {
+      clearInterval(heartbeat)
+    }
   }
 }
