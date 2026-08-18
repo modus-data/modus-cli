@@ -38,6 +38,15 @@
         "cwd": "{workspaceRoot}"
       },
       "cache": false
+    },
+    "test-staging-smoke": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "bash distribution/clients/cli/modus-cli/scripts/staging-context-files-smoke.sh",
+        "cwd": "{workspaceRoot}"
+      },
+      "cache": false
     }
   }
 }
