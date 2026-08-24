@@ -4,7 +4,13 @@ import { pageEnvelope, renderPage } from '../../../output.js'
 import { checkPageSize } from '../../../validation.js'
 
 export default class ContextItemsValues extends BaseCommand<typeof ContextItemsValues> {
-  static description = 'List the sampled values for a context item field (e.g. a table column).'
+  static description =
+    'List sampled values for a context item field. Replace PLACEHOLDER_UID with a real uid whose --context-type matches and whose content has an array at --content-key-path (e.g. enumValues).'
+
+  static examples = [
+    '<%= config.bin %> context items values PLACEHOLDER_UID --context-type table_column --content-key-path enumValues',
+    '<%= config.bin %> context items values PLACEHOLDER_UID --context-type table_column --content-key-path enumValues --pretty',
+  ]
 
   static args = {
     uid: Args.string({ description: 'Context item uid.', required: true }),

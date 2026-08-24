@@ -4,6 +4,11 @@ import { BaseCommand } from '../../../base-command.js'
 export default class ScopesConversationsGet extends BaseCommand<typeof ScopesConversationsGet> {
   static description = 'Get a single conversation thread for a scope, including its messages.'
 
+  static examples = [
+    '<%= config.bin %> scopes conversations get 42 agent_42_abc-xyz',
+    '<%= config.bin %> scopes conversations get 42 agent_42_abc-xyz --message-limit 20',
+  ]
+
   static args = {
     id: Args.string({ description: 'Scope id.', required: true }),
     threadId: Args.string({ description: 'Conversation thread id.', required: true }),

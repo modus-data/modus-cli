@@ -4,7 +4,12 @@ import { pageEnvelope, renderPage } from '../../../output.js'
 import { checkPageSize } from '../../../validation.js'
 
 export default class ScopesConversationsList extends BaseCommand<typeof ScopesConversationsList> {
-  static description = "List a scope's conversation threads."
+  static description = "List a scope's conversation threads (newest first)."
+
+  static examples = [
+    '<%= config.bin %> scopes conversations list 42',
+    '<%= config.bin %> scopes conversations list 42 --pretty --page-size 10',
+  ]
 
   static args = {
     id: Args.string({ description: 'Scope id.', required: true }),

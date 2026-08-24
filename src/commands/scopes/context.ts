@@ -5,6 +5,11 @@ export default class ScopesContext extends BaseCommand<typeof ScopesContext> {
   static description =
     'Compose the context a scope would retrieve for a message, without running a chat turn.'
 
+  static examples = [
+    '<%= config.bin %> scopes context 42 "What tables describe revenue?"',
+    '<%= config.bin %> scopes context revenue-analysis "ARR by region" --limit 5',
+  ]
+
   static args = {
     id: Args.string({ description: 'Scope id.', required: true }),
     message: Args.string({ description: 'Message to compose context for (quote it).', required: true }),
