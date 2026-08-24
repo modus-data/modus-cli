@@ -2,13 +2,12 @@ import { Args, Flags } from '@oclif/core'
 import { BaseCommand } from '../../../base-command.js'
 
 export default class WorkflowsRunsGet extends BaseCommand<typeof WorkflowsRunsGet> {
-  static description = 'Get a single workflow run.'
+  static description =
+    'Get a single workflow run. Pass the list row\'s workflowId as runId (not the composite id). Optionally disambiguate retries with --temporal-run-id.'
 
   static examples = [
-    // Confirmed against real staging output: `runs list`'s `workflowId` field is what `runId`
-    // wants here, NOT its `id` field (a composite of workflowId + temporalRunId) — using `id`
-    // fails with "Automation run not found".
-    '<%= config.bin %> workflows runs get 42 <workflowId from `runs list`> --temporal-run-id <temporalRunId from `runs list`>',
+    '<%= config.bin %> workflows runs get 42 PLACEHOLDER_RUN_ID',
+    '<%= config.bin %> workflows runs get 42 PLACEHOLDER_RUN_ID --temporal-run-id PLACEHOLDER_TEMPORAL_RUN_ID',
   ]
 
   static args = {

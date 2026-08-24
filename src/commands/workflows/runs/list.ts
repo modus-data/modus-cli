@@ -5,7 +5,14 @@ import { pageEnvelope, renderPage } from '../../../output.js'
 import { checkPageSize } from '../../../validation.js'
 
 export default class WorkflowsRunsList extends BaseCommand<typeof WorkflowsRunsList> {
-  static description = "List a workflow's past runs."
+  static description =
+    "List a workflow's past runs. Use each row's workflowId (not id) with `workflows runs get`."
+
+  static examples = [
+    '<%= config.bin %> workflows runs list 42',
+    '<%= config.bin %> workflows runs list 42 --status completed --pretty',
+    '<%= config.bin %> workflows runs list weekly-digest --search digest',
+  ]
 
   static args = {
     id: Args.string({ description: 'Workflow id.', required: true }),
@@ -28,6 +35,8 @@ export default class WorkflowsRunsList extends BaseCommand<typeof WorkflowsRunsL
       pageSize: this.flags['page-size'],
       pageToken: this.flags['page-token'],
     })
-    this.print(pageEnvelope(page), () => renderPage(page, ['id', 'status', 'triggerType', 'startedAt']))
+    this.print(pageEnvelope(page), () =>
+      renderPage(page, ['id', 'workflowId', 'status', 'triggerType', 'startedAt']),
+    )
   }
 }

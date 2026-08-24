@@ -3,11 +3,13 @@ import { BaseCommand } from '../../base-command.js'
 
 export default class WorkflowsRun extends BaseCommand<typeof WorkflowsRun> {
   static description =
-    'Trigger a workflow run now (ad-hoc), streaming its events. Use --thread to continue an existing run session.'
+    'Start a workflow run and stream events (SDK: client.workflows.runs.create). Use --thread to continue a session; --json for structured SSE events.'
 
   static examples = [
-    '<%= config.bin %> workflows run 42 "Run the weekly digest now"',
-    '<%= config.bin %> workflows run 42',
+    '<%= config.bin %> workflows run 42 "Summarize yesterday\'s sales"',
+    '<%= config.bin %> workflows run weekly-digest "Run the weekly digest now"',
+    '<%= config.bin %> workflows run 42 "Follow up" --thread SESSION_ID',
+    '<%= config.bin %> workflows run 42 "Draft only" --version draft --json',
   ]
 
   static args = {

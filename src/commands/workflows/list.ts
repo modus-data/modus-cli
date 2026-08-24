@@ -4,11 +4,13 @@ import { pageEnvelope, renderPage } from '../../output.js'
 import { checkPageSize } from '../../validation.js'
 
 export default class WorkflowsList extends BaseCommand<typeof WorkflowsList> {
-  static description = 'List workflows in the authenticated organization.'
+  static description =
+    'List workflows in the authenticated organization (id, slug, name, type, status).'
 
   static examples = [
     '<%= config.bin %> workflows list',
     '<%= config.bin %> workflows list --pretty',
+    '<%= config.bin %> workflows list --search digest',
     '<%= config.bin %> workflows list --type task',
   ]
 
