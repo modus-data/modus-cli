@@ -2,8 +2,13 @@ import { Args } from '@oclif/core'
 import { BaseCommand } from '../../base-command.js'
 
 export default class RunsEvents extends BaseCommand<typeof RunsEvents> {
-  static description = "Get a run's recorded event history."
+  static description =
+    "Get a run's recorded event history. Replace PLACEHOLDER_RUN_ID with a run id from `workflows runs list`."
 
+  static examples = [
+    '<%= config.bin %> runs events PLACEHOLDER_RUN_ID',
+    '<%= config.bin %> runs events PLACEHOLDER_RUN_ID --pretty',
+  ]
   static args = {
     runId: Args.string({ description: 'Run id.', required: true }),
   }

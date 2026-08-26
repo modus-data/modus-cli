@@ -2,9 +2,13 @@ import { Args } from '@oclif/core'
 import { BaseCommand } from '../../../base-command.js'
 
 export default class ContextFilesGet extends BaseCommand<typeof ContextFilesGet> {
-  static description = 'Get a file upload by id.'
+  static description =
+    'Get a file upload by id. Replace PLACEHOLDER_UPLOAD_ID with the uploadId from `context files upload` or `upload-from-url`.'
 
-  static examples = ['<%= config.bin %> context files get 7a3f9d2c-1111-4000-a000-000000000abc']
+  static examples = [
+    '<%= config.bin %> context files get PLACEHOLDER_UPLOAD_ID',
+    '<%= config.bin %> context files get PLACEHOLDER_UPLOAD_ID --pretty',
+  ]
 
   static args = {
     uploadId: Args.string({ description: 'Upload id returned by `upload` / `upload-from-url`.', required: true }),

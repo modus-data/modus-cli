@@ -3,7 +3,13 @@ import { BaseCommand } from '../../../base-command.js'
 import { mergeJsonBody, readJsonBody } from '../../../input.js'
 
 export default class ContextCustomItemsUpdate extends BaseCommand<typeof ContextCustomItemsUpdate> {
-  static description = 'Update a custom context item.'
+  static description =
+    'Update a custom context item. Replace PLACEHOLDER_UID with a real uid; pass opaque fields (content, attributes) via --file/--body.'
+
+  static examples = [
+    '<%= config.bin %> context custom-items update PLACEHOLDER_UID --description "Updated summary"',
+    '<%= config.bin %> context custom-items update PLACEHOLDER_UID --file patch.json',
+  ]
 
   static args = {
     uid: Args.string({ description: 'Custom context item uid.', required: true }),

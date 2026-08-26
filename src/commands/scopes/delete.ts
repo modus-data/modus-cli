@@ -2,7 +2,9 @@ import { Args } from '@oclif/core'
 import { BaseCommand } from '../../base-command.js'
 
 export default class ScopesDelete extends BaseCommand<typeof ScopesDelete> {
-  static description = 'Delete a scope.'
+  static description = 'Delete a scope by id (use `scopes restore` to undo).'
+
+  static examples = ['<%= config.bin %> scopes delete 42']
 
   static args = {
     id: Args.string({ description: 'Scope id.', required: true }),

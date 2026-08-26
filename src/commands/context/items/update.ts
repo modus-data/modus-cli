@@ -3,7 +3,12 @@ import { BaseCommand } from '../../../base-command.js'
 import { mergeJsonBody, readJsonBody } from '../../../input.js'
 
 export default class ContextItemsUpdate extends BaseCommand<typeof ContextItemsUpdate> {
-  static description = 'Update a context item.'
+  static description =
+    'Update a context item. Replace PLACEHOLDER_UID with a real uid from `context items list`.'
+
+  static examples = [
+    '<%= config.bin %> context items update PLACEHOLDER_UID --description "ARR definition"',
+  ]
 
   static args = {
     uid: Args.string({ description: 'Context item uid.', required: true }),

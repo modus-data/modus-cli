@@ -4,6 +4,11 @@ import { BaseCommand } from '../../base-command.js'
 export default class WorkflowsDeploy extends BaseCommand<typeof WorkflowsDeploy> {
   static description = 'Deploy a workflow (publish the current draft as the active variation).'
 
+  static examples = [
+    '<%= config.bin %> workflows deploy 42',
+    '<%= config.bin %> workflows deploy 42 --pretty',
+  ]
+
   static args = {
     id: Args.string({ description: 'Workflow id.', required: true }),
   }

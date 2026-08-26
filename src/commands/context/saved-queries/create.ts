@@ -2,10 +2,12 @@ import { Args, Flags } from '@oclif/core'
 import { BaseCommand } from '../../../base-command.js'
 
 export default class ContextSavedQueriesCreate extends BaseCommand<typeof ContextSavedQueriesCreate> {
-  static description = 'Save a SQL query against a connection as a context item.'
+  static description =
+    'Save a SQL query against a connection as a context item. Replace conn_warehouse with a real connection id from `connections list`.'
 
   static examples = [
-    '<%= config.bin %> context saved-queries create "Monthly ARR" --connection-id conn_123 --query "select * from arr_monthly"',
+    '<%= config.bin %> context saved-queries create "Monthly ARR" --connection-id conn_warehouse --query "select * from arr_monthly"',
+    '<%= config.bin %> context saved-queries create "Active users" --connection-id conn_warehouse --query "select count(*) from users" --path analytics --path users',
   ]
 
   static args = {

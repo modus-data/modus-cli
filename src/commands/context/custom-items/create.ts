@@ -4,8 +4,12 @@ import { mergeJsonBody, readJsonBody } from '../../../input.js'
 
 export default class ContextCustomItemsCreate extends BaseCommand<typeof ContextCustomItemsCreate> {
   static description =
-    'Create a custom context item. Opaque fields (content, attributes, value, samples, raw) require --file/--body.'
+    'Create a custom context item. Requires --kind and --source-id (or pass a full body via --file/--body). Opaque fields (content, attributes, value, samples, raw) belong in JSON.'
 
+  static examples = [
+    '<%= config.bin %> context custom-items create --kind entity --source-id my-source --name "Q3 churn notes" --description "Key findings"',
+    '<%= config.bin %> context custom-items create --file custom-item.json',
+  ]
   static flags = {
     ...BaseCommand.baseFlags,
     file: Flags.string({ description: 'Path to a JSON file with the full create body.' }),

@@ -2,10 +2,12 @@ import { Args, Flags } from '@oclif/core'
 import { BaseCommand } from '../../base-command.js'
 
 export default class RunsResume extends BaseCommand<typeof RunsResume> {
-  static description = 'Resume a run that is awaiting human input (e.g. an approval gate).'
+  static description =
+    'Resume a run awaiting human input (approval gate). Replace PLACEHOLDER_RUN_ID and PLACEHOLDER_SESSION_ID with values from the run or `runs list-active`.'
 
   static examples = [
-    '<%= config.bin %> runs resume <runId> --session <sessionId> --decision approve "Looks good, proceed."',
+    '<%= config.bin %> runs resume PLACEHOLDER_RUN_ID --session PLACEHOLDER_SESSION_ID --decision approve "Looks good, proceed."',
+    '<%= config.bin %> runs resume PLACEHOLDER_RUN_ID --session PLACEHOLDER_SESSION_ID --decision deny "Need more detail." --json',
   ]
 
   static args = {

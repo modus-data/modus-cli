@@ -5,7 +5,13 @@ import { pageEnvelope, renderPage } from '../../output.js'
 import { checkPageSize } from '../../validation.js'
 
 export default class RunsListActive extends BaseCommand<typeof RunsListActive> {
-  static description = 'List currently active (queued/pending/running) runs across the org.'
+  static description =
+    'List currently active (queued/pending/running) runs across the org. Use runId from output with `runs stream` or `runs cancel`.'
+
+  static examples = [
+    '<%= config.bin %> runs list-active',
+    '<%= config.bin %> runs list-active --page-size 50 --pretty',
+  ]
 
   static flags = {
     ...BaseCommand.baseFlags,

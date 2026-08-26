@@ -4,9 +4,13 @@ import { pageEnvelope, renderPage } from '../../../output.js'
 import { checkPageSize } from '../../../validation.js'
 
 export default class ContextFilesList extends BaseCommand<typeof ContextFilesList> {
-  static description = 'List durable file uploads. Uploads that have not landed yet are only visible via `get`.'
+  static description =
+    'List durable file uploads in the org. In-flight uploads may only appear after `context files get` until they land.'
 
-  static examples = ['<%= config.bin %> context files list --pretty']
+  static examples = [
+    '<%= config.bin %> context files list',
+    '<%= config.bin %> context files list --page-size 50 --pretty',
+  ]
 
   static flags = {
     ...BaseCommand.baseFlags,

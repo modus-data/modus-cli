@@ -5,6 +5,11 @@ export default class ContextCompose extends BaseCommand<typeof ContextCompose> {
   static description =
     'Compose the org-level context Modus would retrieve for a message, without running a chat turn.'
 
+  static examples = [
+    '<%= config.bin %> context compose "Which tables describe revenue?"',
+    '<%= config.bin %> context compose "ARR by region" --limit 5',
+  ]
+
   static args = {
     message: Args.string({ description: 'Message to compose context for (quote it).', required: true }),
   }

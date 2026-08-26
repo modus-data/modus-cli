@@ -2,8 +2,14 @@ import { Args, Flags } from '@oclif/core'
 import { BaseCommand } from '../../base-command.js'
 
 export default class RunsStream extends BaseCommand<typeof RunsStream> {
-  static description = "Tail an existing run's live event stream."
+  static description =
+    "Tail an existing run's live event stream. Replace PLACEHOLDER_RUN_ID with a run id; use --json for structured SSE events."
 
+  static examples = [
+    '<%= config.bin %> runs stream PLACEHOLDER_RUN_ID',
+    '<%= config.bin %> runs stream PLACEHOLDER_RUN_ID --json',
+    '<%= config.bin %> runs stream PLACEHOLDER_RUN_ID --last-event-id evt_abc123',
+  ]
   static args = {
     runId: Args.string({ description: 'Run id.', required: true }),
   }

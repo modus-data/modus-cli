@@ -4,7 +4,14 @@ import { pageEnvelope, renderPage } from '../../../output.js'
 import { checkPageSize } from '../../../validation.js'
 
 export default class ContextCustomItemsList extends BaseCommand<typeof ContextCustomItemsList> {
-  static description = 'List custom context items.'
+  static description =
+    'List custom context items in the org. Use --search-query or --topic to narrow results.'
+
+  static examples = [
+    '<%= config.bin %> context custom-items list',
+    '<%= config.bin %> context custom-items list --search-query churn --pretty',
+    '<%= config.bin %> context custom-items list --topic analytics --topic q3',
+  ]
 
   static flags = {
     ...BaseCommand.baseFlags,

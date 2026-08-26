@@ -4,6 +4,8 @@ import { BaseCommand } from '../../base-command.js'
 export default class WorkflowsDelete extends BaseCommand<typeof WorkflowsDelete> {
   static description = 'Delete a workflow.'
 
+  static examples = ['<%= config.bin %> workflows delete 42']
+
   static args = {
     id: Args.string({ description: 'Workflow id.', required: true }),
   }

@@ -6,6 +6,11 @@ import { mergeJsonBody, readJsonBody } from '../../input.js'
 export default class ScopesUpdate extends BaseCommand<typeof ScopesUpdate> {
   static description = 'Update a scope. Nested fields require --file/--body (see `scopes create --example`).'
 
+  static examples = [
+    '<%= config.bin %> scopes update 42 --description "Answers billing questions."',
+    '<%= config.bin %> scopes update 42 --instruction "Be concise." --instruction "Cite sources."',
+  ]
+
   static args = {
     id: Args.string({ description: 'Scope id.', required: true }),
   }

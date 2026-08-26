@@ -2,7 +2,10 @@ import { Args } from '@oclif/core'
 import { BaseCommand } from '../../../base-command.js'
 
 export default class ContextCustomItemsDelete extends BaseCommand<typeof ContextCustomItemsDelete> {
-  static description = 'Delete a custom context item.'
+  static description =
+    'Delete a custom context item. Replace PLACEHOLDER_UID with a uid from `context custom-items list`.'
+
+  static examples = ['<%= config.bin %> context custom-items delete PLACEHOLDER_UID']
 
   static args = {
     uid: Args.string({ description: 'Custom context item uid.', required: true }),

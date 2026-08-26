@@ -3,9 +3,13 @@ import { BaseCommand } from '../../base-command.js'
 import { renderTable } from '../../output.js'
 
 export default class RunsActiveBySession extends BaseCommand<typeof RunsActiveBySession> {
-  static description = 'Look up active runs for specific session ids (e.g. --thread values from chat/run commands).'
+  static description =
+    'Look up active runs for session ids (e.g. --thread values from chat/run commands). Replace PLACEHOLDER_SESSION_ID with real session ids.'
 
-  static examples = ['<%= config.bin %> runs active-by-session --session <sessionId> --session <sessionId2>']
+  static examples = [
+    '<%= config.bin %> runs active-by-session --session PLACEHOLDER_SESSION_ID',
+    '<%= config.bin %> runs active-by-session --session PLACEHOLDER_SESSION_ID --session PLACEHOLDER_SESSION_ID_2 --pretty',
+  ]
 
   static flags = {
     ...BaseCommand.baseFlags,

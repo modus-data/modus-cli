@@ -2,9 +2,13 @@ import { Args } from '@oclif/core'
 import { BaseCommand } from '../../../base-command.js'
 
 export default class ContextNotesCreate extends BaseCommand<typeof ContextNotesCreate> {
-  static description = 'Add a freeform note as a context item.'
+  static description =
+    'Add a freeform note as a context item. Returns the new uid for follow-up updates or deletes.'
 
-  static examples = ['<%= config.bin %> context notes create "Q3 pricing" "We raised list price 8% in July."']
+  static examples = [
+    '<%= config.bin %> context notes create "Q3 pricing" "We raised list price 8% in July."',
+    '<%= config.bin %> context notes create "Runbook" $\'# Steps\\n1. Check logs\' --pretty',
+  ]
 
   static args = {
     title: Args.string({ description: 'Note title.', required: true }),

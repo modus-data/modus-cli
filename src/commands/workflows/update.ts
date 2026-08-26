@@ -4,7 +4,13 @@ import { BaseCommand } from '../../base-command.js'
 import { mergeJsonBody, readJsonBody } from '../../input.js'
 
 export default class WorkflowsUpdate extends BaseCommand<typeof WorkflowsUpdate> {
-  static description = 'Update a workflow. Nested fields require --file/--body (see `workflows create --example`).'
+  static description =
+    'Update a workflow draft. Nested fields (trigger, agentSelection, workflowStructure) require --file/--body — see `workflows create --example`.'
+
+  static examples = [
+    '<%= config.bin %> workflows update 42 --description "Runs every morning"',
+    '<%= config.bin %> workflows update 42 --file update.json',
+  ]
 
   static args = {
     id: Args.string({ description: 'Workflow id.', required: true }),

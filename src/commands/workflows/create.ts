@@ -6,9 +6,10 @@ import { mergeJsonBody, readJsonBody } from '../../input.js'
 
 export default class WorkflowsCreate extends BaseCommand<typeof WorkflowsCreate> {
   static description =
-    'Create a workflow. Nested fields (trigger, agentSelection, workflowStructure) require --file/--body — see --example.'
+    'Create a workflow draft. Pass --name and --type for a minimal create; nested fields (trigger, agentSelection, workflowStructure) require --file/--body — see --example.'
 
   static examples = [
+    '<%= config.bin %> workflows create --name "Daily report" --type task',
     '<%= config.bin %> workflows create --example > workflow.json',
     '<%= config.bin %> workflows create --file workflow.json',
   ]

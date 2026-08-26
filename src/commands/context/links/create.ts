@@ -2,8 +2,13 @@ import { Args, Flags } from '@oclif/core'
 import { BaseCommand } from '../../../base-command.js'
 
 export default class ContextLinksCreate extends BaseCommand<typeof ContextLinksCreate> {
-  static description = 'Add a link as a context item. Modus crawls and indexes it.'
+  static description =
+    'Add a link as a context item. Modus crawls and indexes the URL; use --crawl to follow linked pages.'
 
+  static examples = [
+    '<%= config.bin %> context links create https://docs.example.com/runbook --title "Ops runbook"',
+    '<%= config.bin %> context links create https://docs.example.com --crawl --page-limit 10',
+  ]
   static args = {
     url: Args.string({ description: 'URL to crawl and index.', required: true }),
   }

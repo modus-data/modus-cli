@@ -4,6 +4,11 @@ import { BaseCommand } from '../../base-command.js'
 export default class ScopesDeploy extends BaseCommand<typeof ScopesDeploy> {
   static description = 'Deploy a scope (publish the current draft as the active variation).'
 
+  static examples = [
+    '<%= config.bin %> scopes deploy 42',
+    '<%= config.bin %> scopes deploy 42 --pretty',
+  ]
+
   static args = {
     id: Args.string({ description: 'Scope id.', required: true }),
   }

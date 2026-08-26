@@ -2,7 +2,10 @@ import { Args } from '@oclif/core'
 import { BaseCommand } from '../../base-command.js'
 
 export default class RunsEditQueued extends BaseCommand<typeof RunsEditQueued> {
-  static description = 'Flush a queued edit for a run awaiting one.'
+  static description =
+    'Flush a queued edit for a run awaiting one. Replace PLACEHOLDER_RUN_ID with the run id that has a pending edit.'
+
+  static examples = ['<%= config.bin %> runs edit-queued PLACEHOLDER_RUN_ID']
 
   static args = {
     runId: Args.string({ description: 'Run id.', required: true }),

@@ -2,7 +2,10 @@ import { Args } from '@oclif/core'
 import { BaseCommand } from '../../base-command.js'
 
 export default class RunsCancel extends BaseCommand<typeof RunsCancel> {
-  static description = 'Cancel an in-flight run.'
+  static description =
+    'Cancel an in-flight run. Replace PLACEHOLDER_RUN_ID with a run id from `workflows runs list` or `runs list-active`.'
+
+  static examples = ['<%= config.bin %> runs cancel PLACEHOLDER_RUN_ID']
 
   static args = {
     runId: Args.string({ description: 'Run id.', required: true }),
