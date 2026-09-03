@@ -23,7 +23,7 @@ describe('collectFiles', () => {
 
     const files = await collectFiles([real, link], true)
 
-    expect(files.sort()).toEqual([link, real].sort())
+    expect(files.map((file) => file.path).sort()).toEqual([link, real].sort())
   })
 
   it('follows a symlinked directory passed explicitly and walks its contents', async () => {
@@ -35,7 +35,7 @@ describe('collectFiles', () => {
 
     const files = await collectFiles([link], true)
 
-    expect(files).toEqual([join(link, 'a.txt')])
+    expect(files).toEqual([{ path: join(link, 'a.txt'), folderPath: 'link-dir' }])
   })
 
   it('still skips symlinks discovered while walking a directory', async () => {
@@ -48,6 +48,22 @@ describe('collectFiles', () => {
 
     const files = await collectFiles([root], true)
 
-    expect(files).toEqual([join(root, 'keep.txt')])
+    expect(files).toEqual([{ path: join(root, 'keep.txt'), folderPath: 'root' }])
+  })
+
+  it('keeps each supplied directory root in the per-file folder path', async () => {
+    const first = join(dir, 'first')
+    const second = join(dir, 'second')
+    await mkdir(first)
+    await mkdir(second)
+    await writeFile(join(first, 'a.txt'), 'a')
+    await writeFile(join(second, 'b.txt'), 'b')
+
+    const files = await collectFiles([first, second], true)
+
+    expect(files).toEqual([
+      { path: join(first, 'a.txt'), folderPath: 'first' },
+      { path: join(second, 'b.txt'), folderPath: 'second' },
+    ])
   })
 })

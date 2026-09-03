@@ -1,7 +1,7 @@
 import { readdir, stat } from 'node:fs/promises'
-import { join } from 'node:path'
+import { dirname, join, relative } from 'node:path'
 import { Args, Flags } from '@oclif/core'
-import type { UploadDirResult, UploadProgress, WaitUntil } from '@getmodus/sdk/management'
+import type { UploadDirResult, UploadFileInput, UploadProgress, WaitUntil } from '@getmodus/sdk/management'
 import { BaseCommand } from '../../../base-command.js'
 import { renderTable } from '../../../output.js'
 import {
@@ -43,12 +43,18 @@ export async function walkFiles(root: string, recursive: boolean): Promise<strin
 /** Follows symlinks on explicitly-named paths, same as the pre-batch single-file
  * branch below and the SDK's own `uploadDir` root handling — only entries
  * *discovered* by walking a directory (see `walkFiles`) skip symlinks. */
-export async function collectFiles(paths: readonly string[], recursive: boolean): Promise<string[]> {
-  const files: string[] = []
+export async function collectFiles(paths: readonly string[], recursive: boolean): Promise<UploadFileInput[]> {
+  const files: UploadFileInput[] = []
   for (const path of paths) {
     const pathStat = await stat(path)
-    if (pathStat.isDirectory()) files.push(...(await walkFiles(path, recursive)))
-    else files.push(path)
+    if (pathStat.isDirectory()) {
+      for (const file of await walkFiles(path, recursive)) {
+        // Relative to each explicitly requested root's parent so multi-root
+        // uploads retain the root directory as well as nested folders.
+        const folderPath = relative(dirname(path), dirname(file)).replace(/\\/g, '/')
+        files.push({ path: file, ...(folderPath.length > 0 ? { folderPath } : {}) })
+      }
+    } else files.push({ path })
   }
   return files
 }
