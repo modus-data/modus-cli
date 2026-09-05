@@ -36,6 +36,12 @@ describe('readJsonBody', () => {
     expect(await readJsonBody({ file })).toEqual({ name: 'from-file' })
   })
 
+  it('rejects --file and --body together, even with an empty file value', async () => {
+    await expect(readJsonBody({ file: '', body: '-' })).rejects.toThrow(
+      'Pass only one of --file or --body.',
+    )
+  })
+
   it("reads and parses JSON from stdin when --body is '-'", async () => {
     const result = await withStdin(JSON.stringify({ name: 'from-stdin' }), () =>
       readJsonBody({ body: '-' }),

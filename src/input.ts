@@ -12,7 +12,10 @@ export async function readJsonBody(options: {
   file?: string
   body?: string
 }): Promise<Record<string, unknown>> {
-  if (options.file) {
+  if (options.file !== undefined && options.body !== undefined) {
+    throw new ValidationError('Pass only one of --file or --body.')
+  }
+  if (options.file !== undefined) {
     return JSON.parse(await readFile(options.file, 'utf8')) as Record<string, unknown>
   }
   if (options.body === '-') {

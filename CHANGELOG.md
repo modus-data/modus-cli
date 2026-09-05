@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+
+- Add `context custom-items create-relations`.
+
 ## [0.1.2]
 
 - Client-facing README pass: logo, badges, tightened copy, and an accurate

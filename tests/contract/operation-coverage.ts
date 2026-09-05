@@ -53,6 +53,7 @@ export const OPERATIONS: Record<string, CoverageEntry> = {
   CustomContextItemsController_list: { status: 'mapped', command: 'modus context custom-items list' },
   CustomContextItemsController_create: { status: 'mapped', command: 'modus context custom-items create' },
   CustomContextItemsController_batchCreate: { status: 'mapped', command: 'modus context custom-items batch-create' },
+  CustomContextItemsController_createRelations: { status: 'mapped', command: 'modus context custom-items create-relations' },
   CustomContextItemsController_get: { status: 'mapped', command: 'modus context custom-items get' },
   CustomContextItemsController_update: { status: 'mapped', command: 'modus context custom-items update' },
   CustomContextItemsController_delete: { status: 'mapped', command: 'modus context custom-items delete' },
