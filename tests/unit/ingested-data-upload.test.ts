@@ -15,13 +15,11 @@ describe('ingested-data upload input', () => {
 
     expect(
       uploadOptionsFromJson({
-        org_id: 'org_test',
         integration_type: 'generic',
         request,
         response,
       }),
     ).toEqual({
-      organizationId: 'org_test',
       integrationType: 'generic',
       request,
       response,
@@ -29,10 +27,9 @@ describe('ingested-data upload input', () => {
   })
 
   it.each([
-    [{ integration_type: 'generic', request: {}, response: {} }, 'org_id'],
-    [{ org_id: 'org_test', request: {}, response: {} }, 'integration_type'],
-    [{ org_id: 'org_test', integration_type: 'generic', response: {} }, 'request'],
-    [{ org_id: 'org_test', integration_type: 'generic', request: {} }, 'response'],
+    [{ request: {}, response: {} }, 'integration_type'],
+    [{ integration_type: 'generic', response: {} }, 'request'],
+    [{ integration_type: 'generic', request: {} }, 'response'],
   ])('rejects a missing top-level field without printing content', (body, field) => {
     expect(() => uploadOptionsFromJson(body)).toThrow(ValidationError)
     expect(() => uploadOptionsFromJson(body)).toThrow(field)
