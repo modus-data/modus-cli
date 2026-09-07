@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+
+- Add `ingested-data upload` for immutable SQL and HTTP request/response data.
+
 ## [0.1.2]
 
 - Client-facing README pass: logo, badges, tightened copy, and an accurate

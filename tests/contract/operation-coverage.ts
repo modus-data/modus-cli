@@ -15,6 +15,8 @@ export type CoverageEntry =
   | { status: 'excluded'; reason: string; ticket: string }
 
 export const OPERATIONS: Record<string, CoverageEntry> = {
+  // --- Ingested data ---
+  IngestedDataController_upload: { status: 'mapped', command: 'modus ingested-data upload' },
   // --- Connections ---
   ConnectionsController_list: { status: 'mapped', command: 'modus connections list' },
 
