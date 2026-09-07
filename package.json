@@ -49,6 +49,7 @@
       "runs": { "description": "Inspect and resume workflow or chat runs" },
       "workflow-actions": { "description": "Execute workflow actions by name" },
       "suggestions": { "description": "List and record suggestion events" },
+      "ingested-data": { "description": "Store exact integration request and response data" },
       "member-groups": { "description": "List organization member groups" },
       "org-members": { "description": "List organization members" }
     }
