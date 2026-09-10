@@ -36,7 +36,7 @@ export interface TokenResponse {
 
 /**
  * The OAuth issuer lives on `app.*`, the REST API on `api.*` — same env
- * segment, different subdomain (docs/mcp/oauth.md, packages/config/src/schemas/oauth.ts).
+ * segment, different subdomain (docs/engineering/mcp/oauth.md, packages/config/src/schemas/oauth.ts).
  * Local dev and non-standard deployments don't follow this convention —
  * returns undefined so the caller can require an explicit --issuer.
  */
