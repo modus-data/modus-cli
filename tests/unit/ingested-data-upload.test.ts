@@ -8,8 +8,7 @@ describe('ingested-data upload input', () => {
       type: 'http',
       uri: 'https://example.com/שלום',
       method: 'POST',
-      headers: { Empty: '', Whitespace: '  ' },
-      body: '',
+      body: '  \r\n  ',
     }
     const response = { format: 'text', content: 'line 1\r\nשלום\r\n' }
 

@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 - Add `ingested-data upload` for immutable SQL and HTTP request/response data.
+- Add `context custom-items create-relations`.
 
 ## [0.1.2]
 
