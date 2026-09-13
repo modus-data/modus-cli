@@ -52,6 +52,6 @@ export default class IngestedDataUpload extends BaseCommand<typeof IngestedDataU
     const options = uploadOptionsFromJson(body)
     const client = await this.modusClient()
     const created = await client.ingestedData.upload(options)
-    this.print(created, () => `${created.checksum}  ${created.key}`)
+    this.print(created, () => created.checksum)
   }
 }

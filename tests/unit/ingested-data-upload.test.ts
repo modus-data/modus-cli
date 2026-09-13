@@ -10,7 +10,7 @@ describe('ingested-data upload input', () => {
       method: 'POST',
       body: '  \r\n  ',
     }
-    const response = { format: 'text', content: 'line 1\r\nשלום\r\n' }
+    const response = { status: 200, format: 'text', content: 'line 1\r\nשלום\r\n' }
 
     expect(
       uploadOptionsFromJson({
