@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 
-- Add `ingested-data upload` for immutable SQL and HTTP request/response data.
+- Add `ingested-data upload` for immutable SQL and HTTP request/response data; it accepts an optional source response status and prints the stored checksum.
 - Add `context custom-items create-relations`.
 - `conversations list` and `scopes conversations list` gain `--source` and
   `--source-ref` flags to filter by UI surface (e.g. `dashboard_copilot`).
