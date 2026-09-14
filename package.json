@@ -58,7 +58,6 @@
     "build": "tsc -p tsconfig.json && oclif manifest",
     "postpack": "rimraf oclif.manifest.json",
     "prepack": "pnpm run build",
-    "test": "vitest run",
     "clean": "rimraf dist tsconfig.tsbuildinfo oclif.manifest.json"
   },
   "dependencies": {
@@ -71,6 +70,6 @@
     "rimraf": "^6.0.1",
     "tsx": "^4.21.0",
     "typescript": "^6.0.2",
-    "vitest": "^4.1.11"
+    "vitest": "^5.0.0"
   }
 }
