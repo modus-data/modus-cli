@@ -65,6 +65,13 @@ export const OPERATIONS: Record<string, CoverageEntry> = {
   ContextCreatorsController_createNote: { status: 'mapped', command: 'modus context notes create' },
   ContextCreatorsController_createSavedQuery: { status: 'mapped', command: 'modus context saved-queries create' },
 
+  // --- Context dashboards ---
+  DashboardsController_listElements: { status: 'mapped', command: 'modus context dashboards elements list' },
+  DashboardsController_getElement: { status: 'mapped', command: 'modus context dashboards elements get' },
+  DashboardsController_createElement: { status: 'mapped', command: 'modus context dashboards elements create' },
+  DashboardsController_updateElement: { status: 'mapped', command: 'modus context dashboards elements update' },
+  DashboardsController_updateLayout: { status: 'mapped', command: 'modus context dashboards layout update' },
+
   // --- Org-level Modus ---
   ModusChatController_chat: { status: 'mapped', command: 'modus chat "message"' },
   ModusChatController_chatContinue: { status: 'mapped', command: 'modus chat "message" --thread <id>' },
