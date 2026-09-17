@@ -1,6 +1,60 @@
-import type { DashboardElementResult, DashboardElementsList } from '@getmodus/sdk/management'
+import type {
+  Dashboard,
+  DashboardDraftSnapshot,
+  DashboardElementResult,
+  DashboardElementsList,
+  DashboardVersion,
+} from '@getmodus/sdk/management'
 import { describe, expect, it } from 'vitest'
-import { formatLayout, renderElement, renderElementsList } from '../../src/dashboard-output.js'
+import {
+  formatLayout,
+  renderDashboard,
+  renderDashboardsList,
+  renderDraftSnapshots,
+  renderElement,
+  renderElementsList,
+  renderVersionsList,
+} from '../../src/dashboard-output.js'
+
+const access = {
+  visibility: 'private',
+  groupPermissions: {},
+  sharedWith: [],
+  ownerUserId: 'user_owner',
+  ownerEmail: 'owner@example.com',
+} as Dashboard['access']
+
+function dashboard(overrides: Partial<Dashboard> = {}): Dashboard {
+  return {
+    id: 'dash-1',
+    contextItemId: 'ctx-1',
+    title: 'Revenue',
+    description: 'Monthly revenue',
+    access,
+    definition: {
+      tiles: [{ id: 't1', title: 'By region', kind: 'table', sql: 'select 1', config: {} }],
+      filters: [{ id: 'region', label: 'Region', type: 'string', required: false }],
+      layout: { elements: { t1: { x: 0, y: 0, w: 12, h: 4 } }, filterConfigs: {} },
+    },
+    view: 'active',
+    selectedVersion: {
+      id: 'ver-2',
+      versionNumber: 2,
+      createdByUserId: 'user_owner',
+      createdAt: '2026-09-16T10:00:00.000Z',
+      access,
+    },
+    draftRevision: 5,
+    activeVersionId: 'ver-2',
+    updatedByUserId: 'user_owner',
+    createdAt: '2026-09-01T10:00:00.000Z',
+    updatedAt: '2026-09-16T10:00:00.000Z',
+    pendingOwnershipTransfer: null,
+    canUse: true,
+    canManage: true,
+    ...overrides,
+  } as Dashboard
+}
 
 describe('formatLayout', () => {
   it('joins the grid position, and is blank without one', () => {
@@ -93,5 +147,85 @@ describe('renderElement', () => {
       element: { id: 'el4', kind: 'filter', title: 'Date', layout: null, defaultValue: null },
     })
     expect(output).toMatch(/^defaultValue\s*$/m)
+  })
+})
+
+describe('renderDashboardsList', () => {
+  it('shows one row per dashboard with its version and draft revision', () => {
+    const lines = renderDashboardsList([dashboard()]).split('\n')
+    expect(lines[0]).toMatch(/^id\s+title\s+view\s+version\s+draftRevision\s+visibility\s+updatedAt\s*$/)
+    expect(lines[2]).toMatch(/^dash-1\s+Revenue\s+active\s+2\s+5\s+private\s+2026-09-16T10:00:00.000Z\s*$/)
+  })
+
+  it('says so when there are no dashboards', () => {
+    expect(renderDashboardsList([])).toBe('(no results)')
+  })
+})
+
+describe('renderDashboard', () => {
+  it('shows the dashboard fields, then every tile and filter with its grid position', () => {
+    const output = renderDashboard(
+      dashboard({
+        pendingOwnershipTransfer: {
+          pendingOwnerUserId: 'user_next',
+          requestedByUserId: 'user_owner',
+          requestedAt: '2026-09-16T10:00:00.000Z',
+        },
+      }),
+    )
+    expect(output).toMatch(/^title\s+Revenue\s*$/m)
+    expect(output).toMatch(/^version\s+2\s*$/m)
+    expect(output).toMatch(/^draftRevision\s+5\s*$/m)
+    expect(output).toMatch(/^owner\s+owner@example.com\s*$/m)
+    expect(output).toMatch(/^pendingOwner\s+user_next\s*$/m)
+    expect(output).toMatch(/^t1\s+table\s+By region\s+0,0,12,4\s*$/m)
+    expect(output).toMatch(/^region\s+filter\s+Region\s*$/m)
+  })
+
+  it('shows a blank version for the draft and no rows for an empty definition', () => {
+    const base = dashboard()
+    const output = renderDashboard(
+      dashboard({
+        view: 'draft',
+        selectedVersion: { ...base.selectedVersion, id: null, versionNumber: null },
+        definition: { tiles: [], filters: [] },
+      }),
+    )
+    expect(output).toMatch(/^version\s*$/m)
+    expect(output).toMatch(/^view\s+draft\s*$/m)
+    expect(output).toContain('(no results)')
+  })
+})
+
+describe('renderVersionsList', () => {
+  it('shows one row per version', () => {
+    const version = {
+      uid: 'ver-2',
+      dashboardUid: 'dash-1',
+      versionNumber: 2,
+      kind: 'published',
+      title: 'Revenue',
+      description: '',
+      access,
+      definition: {},
+      createdByUserId: 'user_owner',
+      createdAt: '2026-09-16T10:00:00.000Z',
+    } as DashboardVersion
+    const lines = renderVersionsList([version]).split('\n')
+    expect(lines[0]).toMatch(/^uid\s+versionNumber\s+kind\s+title\s+createdByUserId\s+createdAt\s*$/)
+    expect(lines[2]).toMatch(/^ver-2\s+2\s+published\s+Revenue\s+user_owner\s+2026-09-16T10:00:00.000Z\s*$/)
+  })
+})
+
+describe('renderDraftSnapshots', () => {
+  it('shows one row per snapshot', () => {
+    const snapshot: DashboardDraftSnapshot = {
+      uid: 'snap-1',
+      createdByUserId: 'user_owner',
+      createdAt: '2026-09-16T10:00:00.000Z',
+    }
+    const lines = renderDraftSnapshots([snapshot]).split('\n')
+    expect(lines[0]).toMatch(/^uid\s+createdByUserId\s+createdAt\s*$/)
+    expect(lines[2]).toMatch(/^snap-1\s+user_owner\s+2026-09-16T10:00:00.000Z\s*$/)
   })
 })

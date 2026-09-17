@@ -141,6 +141,10 @@ modus context files upload ./report.pdf
 modus context files upload ./docs --wait-until ready
 modus context files upload-from-url https://example.com/report.pdf
 modus context files list --pretty
+modus context dashboards list --pretty
+modus context dashboards create --example > dashboard.json
+modus context dashboards create --file dashboard.json
+modus context dashboards publish <dashboardId> --expected-revision 1
 modus context dashboards elements list <dashboardId> --pretty
 modus context dashboards layout update <dashboardId> --file layout.json
 
@@ -155,7 +159,8 @@ modus runs cancel <runId>
   configuration, ownership transfer.
 - **Workflows** — create, trigger, run history, ownership transfer.
 - **Context** — organization context items, notes, saved queries, file uploads,
-  dashboard tiles, filters and layout.
+  dashboards (drafts, publishing, version history, access, ownership transfer)
+  and their tiles, filters and layout.
 - **Connections, usage, and org members.**
 
 ## Commands
