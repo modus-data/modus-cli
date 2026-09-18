@@ -9,6 +9,8 @@ export default class ConversationsList extends BaseCommand<typeof ConversationsL
   static flags = {
     ...BaseCommand.baseFlags,
     kind: Flags.string({ description: 'Filter by conversation kind.', options: ['all', 'modus', 'scopes'] }),
+    source: Flags.string({ description: 'Restrict to conversations started from this UI surface (e.g. context_chat, dashboard_copilot, slack).' }),
+    'source-ref': Flags.string({ description: 'Narrow --source to one instance of that surface (e.g. a dashboard id for dashboard_copilot). Requires --source.' }),
     'page-size': Flags.integer({ description: 'Items per page (default 25, max 100).' }),
     'page-token': Flags.string({ description: 'Opaque page token from a previous response.' }),
   }
@@ -18,6 +20,8 @@ export default class ConversationsList extends BaseCommand<typeof ConversationsL
     const client = await this.modusClient()
     const page = await client.modus.conversations.list({
       kind: this.flags.kind as 'all' | 'modus' | 'scopes' | undefined,
+      source: this.flags.source,
+      sourceRef: this.flags['source-ref'],
       pageSize: this.flags['page-size'],
       pageToken: this.flags['page-token'],
     })

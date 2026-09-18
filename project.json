@@ -18,7 +18,7 @@
       "executor": "nx:run-commands",
       "dependsOn": ["build"],
       "options": {
-        "command": "pnpm --filter @getmodus/cli exec vitest run",
+        "command": "vitest run --root distribution/clients/cli/modus-cli",
         "cwd": "{workspaceRoot}"
       }
     },
