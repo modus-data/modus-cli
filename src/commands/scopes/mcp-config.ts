@@ -6,7 +6,7 @@ export default class ScopesMcpConfig extends BaseCommand<typeof ScopesMcpConfig>
   static description = "Patch a scope's MCP interface config (core tool exposure, outbound tool exposure)."
 
   static examples = [
-    '<%= config.bin %> scopes mcp-config 42 --body -  <<< \'{"coreTools":{"chat":{"enabled":true}},"mcpToolExposure":{"mode":"all"}}\'',
+    '<%= config.bin %> scopes mcp-config 42 --body -  <<< \'{"coreTools":{"chat":false,"getContext":true},"mcpToolExposure":{"version":1,"mode":"discovery","allowedIntegrationKeys":[]}}\'',
   ]
 
   static args = {
