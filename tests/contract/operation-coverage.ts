@@ -65,6 +65,27 @@ export const OPERATIONS: Record<string, CoverageEntry> = {
   ContextCreatorsController_createNote: { status: 'mapped', command: 'modus context notes create' },
   ContextCreatorsController_createSavedQuery: { status: 'mapped', command: 'modus context saved-queries create' },
 
+  // --- Context dashboards ---
+  DashboardsController_list: { status: 'mapped', command: 'modus context dashboards list' },
+  DashboardsController_get: { status: 'mapped', command: 'modus context dashboards get' },
+  DashboardsController_create: { status: 'mapped', command: 'modus context dashboards create' },
+  DashboardsController_delete: { status: 'mapped', command: 'modus context dashboards delete' },
+  DashboardsController_updateDraft: { status: 'mapped', command: 'modus context dashboards update-draft' },
+  DashboardsController_publish: { status: 'mapped', command: 'modus context dashboards publish' },
+  DashboardsController_listVersions: { status: 'mapped', command: 'modus context dashboards versions list' },
+  DashboardsController_getVersion: { status: 'mapped', command: 'modus context dashboards versions get' },
+  DashboardsController_restore: { status: 'mapped', command: 'modus context dashboards versions restore' },
+  DashboardsController_listDraftSnapshots: { status: 'mapped', command: 'modus context dashboards snapshots list' },
+  DashboardsController_updateAccess: { status: 'mapped', command: 'modus context dashboards access update' },
+  DashboardsController_transferOwnership: { status: 'mapped', command: 'modus context dashboards ownership request' },
+  DashboardsController_acceptOwnership: { status: 'mapped', command: 'modus context dashboards ownership accept' },
+  DashboardsController_cancelOwnership: { status: 'mapped', command: 'modus context dashboards ownership cancel' },
+  DashboardsController_listElements: { status: 'mapped', command: 'modus context dashboards elements list' },
+  DashboardsController_getElement: { status: 'mapped', command: 'modus context dashboards elements get' },
+  DashboardsController_createElement: { status: 'mapped', command: 'modus context dashboards elements create' },
+  DashboardsController_updateElement: { status: 'mapped', command: 'modus context dashboards elements update' },
+  DashboardsController_updateLayout: { status: 'mapped', command: 'modus context dashboards layout update' },
+
   // --- Org-level Modus ---
   ModusChatController_chat: { status: 'mapped', command: 'modus chat "message"' },
   ModusChatController_chatContinue: { status: 'mapped', command: 'modus chat "message" --thread <id>' },

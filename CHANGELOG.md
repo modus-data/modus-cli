@@ -4,6 +4,10 @@
 
 - Add `ingested-data upload` for immutable SQL and HTTP request/response data; it accepts an optional source response status and prints the stored checksum.
 - Add `context custom-items create-relations`.
+- Add `context dashboards elements list|get|create|update` and `context dashboards layout update`.
+- Add `context dashboards list|get|create|delete|update-draft|publish`, `context dashboards versions list|get|restore`,
+  `context dashboards snapshots list`, `context dashboards access update`, and
+  `context dashboards ownership request|accept|cancel`.
 - `conversations list` and `scopes conversations list` gain `--source` and
   `--source-ref` flags to filter by UI surface (e.g. `dashboard_copilot`).
 

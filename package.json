@@ -41,7 +41,7 @@
     "topics": {
       "scopes": { "description": "Chat with, create, deploy, and manage Modus scopes" },
       "workflows": { "description": "Create, deploy, run, and manage Modus workflows" },
-      "context": { "description": "Read and manage organization context items, notes, and saved queries" },
+      "context": { "description": "Read and manage organization context items, notes, saved queries, and dashboards" },
       "connections": { "description": "List integration connections" },
       "tools": { "description": "List tools available to scopes (requires a published SDK with management.tools)" },
       "usage": { "description": "Inspect organization usage and per-user breakdowns" },
