@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- Add `scopes interfaces list|add|update|delete` for Slack and Microsoft Teams interfaces on a scope; `delete` asks for confirmation unless `--yes` is passed.
 - Add `ingested-data upload` for immutable SQL and HTTP request/response data; it accepts an optional source response status and prints the stored checksum.
 - Add `context custom-items create-relations`.
 - Add `context dashboards elements list|get|create|update` and `context dashboards layout update`.

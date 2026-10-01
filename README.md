@@ -155,8 +155,8 @@ modus runs cancel <runId>
 
 ## Features
 
-- **Scopes** — chat, create, deploy, evaluations, memories, supervision, MCP
-  configuration, ownership transfer.
+- **Scopes** — chat, create, deploy, evaluations, memories, supervision, Slack
+  and Microsoft Teams interfaces, MCP configuration, ownership transfer.
 - **Workflows** — create, trigger, run history, ownership transfer.
 - **Context** — organization context items, notes, saved queries, file uploads,
   dashboards (drafts, publishing, version history, access, ownership transfer)

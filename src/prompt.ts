@@ -73,3 +73,13 @@ export async function promptHidden(query: string): Promise<string> {
     process.on('SIGTERM', onSignal)
   })
 }
+
+/** Ask a yes/no question; only `y` or `yes` (any case) confirms. */
+export async function promptConfirm(query: string): Promise<boolean> {
+  const rl = createInterface({ input: process.stdin, output: process.stdout })
+  const answer = await new Promise<string>((resolvePromise) => {
+    rl.question(`${query} (y/N) `, resolvePromise)
+  })
+  rl.close()
+  return /^y(es)?$/i.test(answer.trim())
+}
