@@ -5,6 +5,9 @@
   "tags": ["scope:cli", "type:app", "lang:typescript"],
   "implicitDependencies": ["modus-sdk-typescript"],
   "targets": {
+    "typecheck": {
+      "dependsOn": [{ "projects": ["modus-sdk-typescript"], "target": "build" }]
+    },
     "build": {
       "executor": "nx:run-commands",
       "dependsOn": [{ "projects": ["modus-sdk-typescript"], "target": "build" }],
@@ -23,15 +26,8 @@
       }
     },
     "lint": {
-      "executor": "nx:run-commands",
-      "dependsOn": [{ "projects": ["modus-sdk-typescript"], "target": "build" }],
-      "options": {
-        "command": "eslint src tests --max-warnings=0 && pnpm exec tsc -p tsconfig.json --noEmit",
-        "cwd": "{projectRoot}"
-      },
-      "inputs": ["default", "{workspaceRoot}/eslint.config.js",
-        "{workspaceRoot}/scripts/eslint-rules/**/*.mjs"
-      ]
+      "dependsOn": ["typecheck"],
+      "options": { "args": "--no-quiet --max-warnings=0" }
     },
     "clean": {
       "executor": "nx:run-commands",
