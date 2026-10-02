@@ -3,7 +3,6 @@ import { buildInlineImageEscape, MODUS_LOGO, renderLogoImage, supportsInlineImag
 
 describe('MODUS_LOGO', () => {
   it('renders a multi-line banner with no stray escape artifacts', () => {
-    // eslint-disable-next-line no-control-regex
     const plain = MODUS_LOGO.replace(/\x1B\[[0-9;]*m/g, '')
     const lines = plain.split('\n')
     expect(lines.length).toBeGreaterThan(1)
@@ -46,7 +45,6 @@ describe('renderLogoImage', () => {
   })
 
   it('returns the escape sequence for supported terminals', () => {
-    // eslint-disable-next-line no-control-regex
     expect(renderLogoImage({ TERM_PROGRAM: 'iTerm.app' })).toMatch(/^\x1b]1337;File=inline=1/)
   })
 })
