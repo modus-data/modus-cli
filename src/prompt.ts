@@ -6,7 +6,7 @@ const CTRL_C = 3
 const BACKSPACE_CODES = new Set([8, 127]) // \b, DEL
 
 /**
- * ponytail: @oclif/core v4 dropped the old cli-ux `ux.prompt({type:'hide'})` helper.
+ * @oclif/core v4 dropped the old cli-ux `ux.prompt({type:'hide'})` helper.
  * This is the standard raw-mode-stdin recipe for masked input rather than a new dependency.
  */
 export async function promptHidden(query: string): Promise<string> {
