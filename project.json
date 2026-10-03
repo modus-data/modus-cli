@@ -15,7 +15,7 @@
         "command": "pnpm --filter @getmodus/cli run build",
         "cwd": "{workspaceRoot}"
       },
-      "outputs": ["{projectRoot}/dist"]
+      "outputs": ["{projectRoot}/dist", "{projectRoot}/oclif.manifest.json"]
     },
     "test": {
       "executor": "nx:run-commands",
