@@ -58,7 +58,7 @@
     "build": "tsc -p tsconfig.json && oclif manifest",
     "postpack": "rimraf oclif.manifest.json",
     "prepack": "pnpm run build",
-    "clean": "rimraf dist tsconfig.tsbuildinfo oclif.manifest.json"
+    "clean": "rimraf dist oclif.manifest.json"
   },
   "dependencies": {
     "@getmodus/sdk": "workspace:*",

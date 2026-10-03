@@ -6,7 +6,9 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "incremental": false,
-    "ignoreDeprecations": "6.0"
+    "ignoreDeprecations": "6.0",
+    // Published to npm: keep the source out of the shipped maps.
+    "inlineSources": false
   },
   "include": ["src"],
   "exclude": ["src/**/*.test.ts", "tests"]

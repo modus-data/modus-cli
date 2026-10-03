@@ -10,7 +10,7 @@ export default class ConversationsList extends BaseCommand<typeof ConversationsL
     ...BaseCommand.baseFlags,
     kind: Flags.string({ description: 'Filter by conversation kind.', options: ['all', 'modus', 'scopes'] }),
     source: Flags.string({ description: 'Restrict to conversations started from this UI surface (e.g. context_chat, dashboard_copilot, slack).' }),
-    'source-ref': Flags.string({ description: 'Narrow --source to one instance of that surface (e.g. a dashboard id for dashboard_copilot). Requires --source.' }),
+    'source-ref': Flags.string({ description: 'Narrow --source to one instance of that surface (e.g. a dashboard id for dashboard_copilot or dashboard_assistant; both scope conversation history per dashboard). Requires --source.' }),
     'page-size': Flags.integer({ description: 'Items per page (default 25, max 100).' }),
     'page-token': Flags.string({ description: 'Opaque page token from a previous response.' }),
   }
