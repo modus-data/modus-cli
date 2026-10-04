@@ -18,12 +18,32 @@
       "outputs": ["{projectRoot}/dist", "{projectRoot}/oclif.manifest.json"]
     },
     "test": {
-      "executor": "nx:run-commands",
       "dependsOn": ["build"],
+      "inputs": [
+        "default",
+        "^production",
+        "vitestHarness",
+        "{workspaceRoot}/apps/services/*/openapi/v1.json"
+      ],
       "options": {
         "command": "vitest run --root distribution/clients/cli/modus-cli",
         "cwd": "{workspaceRoot}"
       }
+    },
+    "cli-docs:check": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": {
+        "command": "pnpm run cli-docs:sync && pnpm run cli-docs:nav && pnpm run cli-docs:check",
+        "cwd": "{workspaceRoot}"
+      },
+      "cache": true,
+      "inputs": [
+        "default",
+        "{workspaceRoot}/tools/cli-docs/**",
+        "{workspaceRoot}/distribution/docs/cli/**",
+        "{workspaceRoot}/distribution/docs/cli-nav.json"
+      ]
     },
     "lint": {
       "dependsOn": ["typecheck"]
