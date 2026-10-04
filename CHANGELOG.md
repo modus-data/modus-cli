@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+- `context items list` gains repeatable `--parent-uid`, `--ancestor-uid`, and
+  `--connection-id` for generic hierarchy browse. A single empty `--parent-uid ""`
+  lists the known-empty root (`connectionIds=files` is the Files root).
+- `context files upload` and `upload-from-url` gain `--folder-path` to upload under a root-relative folder.
 - Add `scopes interfaces list|add|update|delete` for Slack and Microsoft Teams interfaces on a scope; `delete` asks for confirmation unless `--yes` is passed.
 - Add `ingested-data upload` for immutable SQL and HTTP request/response data; it accepts an optional source response status and prints the stored checksum.
 - Add `context custom-items create-relations`.
