@@ -3,7 +3,7 @@ import { BaseCommand } from '../../../base-command.js'
 
 export default class ContextItemsDelete extends BaseCommand<typeof ContextItemsDelete> {
   static description =
-    'Delete a context item. Replace PLACEHOLDER_UID with a real uid from `context items list`.'
+    'Delete a context item. Deleting a Files folder also deletes all its contents. Replace PLACEHOLDER_UID with a real uid from `context items list`.'
 
   static examples = ['<%= config.bin %> context items delete PLACEHOLDER_UID']
 
