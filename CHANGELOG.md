@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- `context items move UID --destination-folder-uid FOLDER_UID` moves a live file
+  or Files folder. An empty `--destination-folder-uid` moves to the Files root.
 - `context items list` gains repeatable `--parent-uid`, `--ancestor-uid`, and
   `--connection-id` for generic hierarchy browse. A single empty `--parent-uid ""`
   lists the known-empty root (`connectionIds=files` is the Files root).

@@ -25,6 +25,7 @@ export const OPERATIONS: Record<string, CoverageEntry> = {
   ContextItemsController_get: { status: 'mapped', command: 'modus context items get' },
   ContextItemsController_update: { status: 'mapped', command: 'modus context items update' },
   ContextItemsController_delete: { status: 'mapped', command: 'modus context items delete' },
+  ContextItemsController_move: { status: 'mapped', command: 'modus context items move' },
   ContextItemsController_listValues: { status: 'mapped', command: 'modus context items values' },
   ContextItemsController_lookup: { status: 'mapped', command: 'modus context items lookup' },
 
