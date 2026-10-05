@@ -5,7 +5,7 @@
  * openapi/v1.json must appear here with an explicit decision: `mapped` (a
  * real command exists) or `excluded` (deliberately not CLI-facing, with a
  * reason and a CU ticket) — never silently absent. Checked in CI on every
- * PR touching the public specs (see the `openapi-contract` job in
+ * PR touching the public specs (see the `contract-checks` job in
  * `_reusable-branch-ci.yml`), not just at release time.
  */
 
