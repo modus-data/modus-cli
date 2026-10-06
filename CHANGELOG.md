@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- Requests carry `X-Modus-Client: cli`, so usage is attributed to the CLI.
 - `context items move UID --destination-folder-uid FOLDER_UID` moves a live file
   or Files folder. An empty `--destination-folder-uid` moves to the Files root.
 - `context items list` gains repeatable `--parent-uid`, `--ancestor-uid`, and

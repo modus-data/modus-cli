@@ -1,6 +1,6 @@
 import { Flags } from '@oclif/core'
 import { AuthenticationError, Modus } from '@getmodus/sdk'
-import { BaseCommand } from '../base-command.js'
+import { BaseCommand, CLIENT_HEADERS } from '../base-command.js'
 import { maskToken, parseOrgUuidFromToken, writeStoredConfig } from '../config.js'
 import { MODUS_LOGO, renderLogoImage } from '../logo.js'
 import {
@@ -70,7 +70,7 @@ export default class Login extends BaseCommand<typeof Login> {
       throw new AuthenticationError("Invalid token format. Modus tokens start with 'modus_'.")
     }
 
-    const client = new Modus({ apiKey: token, baseUrl: this.flags['base-url'] })
+    const client = new Modus({ apiKey: token, baseUrl: this.flags['base-url'], defaultHeaders: CLIENT_HEADERS })
     await client.scopes.list({ pageSize: 1 })
 
     await writeStoredConfig({
