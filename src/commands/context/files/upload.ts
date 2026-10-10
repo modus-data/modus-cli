@@ -70,6 +70,7 @@ export default class ContextFilesUpload extends BaseCommand<typeof ContextFilesU
     '<%= config.bin %> context files upload ./docs ./extra.pdf --concurrency 20',
     '<%= config.bin %> context files upload ./report.pdf --wait-until ready',
     '<%= config.bin %> context files upload ./docs --no-recursive',
+    '<%= config.bin %> context files upload ./docs --folder-path reports/2026',
   ]
 
   static strict = false
@@ -91,6 +92,10 @@ export default class ContextFilesUpload extends BaseCommand<typeof ContextFilesU
       options: [...WAIT_UNTIL_OPTIONS],
       default: 'processing',
     }),
+    'folder-path': Flags.string({
+      description:
+        'Upload under this root-relative folder, preserving subdirectories. `modus context files upload ./docs --folder-path reports` places ./docs/a.txt at reports/docs and ./docs/nested/b.txt at reports/docs/nested.',
+    }),
   }
 
   async run(): Promise<void> {
@@ -105,7 +110,10 @@ export default class ContextFilesUpload extends BaseCommand<typeof ContextFilesU
       const only = paths[0] as string
       const pathStat = await stat(only)
       if (!pathStat.isDirectory()) {
-        const file = await mgmt.context.files.upload(only, { waitUntil })
+        const file = await mgmt.context.files.upload(only, {
+          waitUntil,
+          ...(this.flags['folder-path'] !== undefined ? { folderPath: this.flags['folder-path'] } : {}),
+        })
         this.print(file, () => JSON.stringify(file, null, 2))
         return
       }
@@ -146,6 +154,7 @@ export default class ContextFilesUpload extends BaseCommand<typeof ContextFilesU
         concurrency: this.flags.concurrency,
         waitUntil,
         onProgress,
+        ...(this.flags['folder-path'] !== undefined ? { folderPath: this.flags['folder-path'] } : {}),
       })
 
       this.print(result, () => renderUploadDirResult(result))

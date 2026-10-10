@@ -11,6 +11,7 @@ export default class ContextFilesUploadFromUrl extends BaseCommand<typeof Contex
     '<%= config.bin %> context files upload-from-url https://example.com/report.pdf',
     '<%= config.bin %> context files upload-from-url https://example.com/report.pdf --file-name "Q3 report.pdf"',
     '<%= config.bin %> context files upload-from-url https://a.example.com/1.pdf --url https://a.example.com/2.pdf',
+    '<%= config.bin %> context files upload-from-url https://example.com/report.pdf --folder-path reports/2026',
   ]
 
   static args = {
@@ -21,14 +22,21 @@ export default class ContextFilesUploadFromUrl extends BaseCommand<typeof Contex
     ...BaseCommand.baseFlags,
     url: Flags.string({ description: 'Additional source URL (repeatable, for a bulk request).', multiple: true }),
     'file-name': Flags.string({ description: 'Override file name. Single-URL requests only.' }),
+    'folder-path': Flags.string({
+      description: 'Upload under this root-relative folder. Example: --folder-path reports/2026.',
+    }),
   }
 
   async run(): Promise<void> {
     const urls = [this.args.url, ...(this.flags.url ?? [])]
     const mgmt = await this.modusManagement()
 
+    const folderPath = this.flags['folder-path']
     if (urls.length === 1) {
-      const file = await mgmt.context.files.uploadFromUrl(urls[0] as string, { fileName: this.flags['file-name'] })
+      const file = await mgmt.context.files.uploadFromUrl(urls[0] as string, {
+        fileName: this.flags['file-name'],
+        ...(folderPath !== undefined ? { folderPath } : {}),
+      })
       this.print(file, () => JSON.stringify(file, null, 2))
       return
     }
@@ -36,7 +44,9 @@ export default class ContextFilesUploadFromUrl extends BaseCommand<typeof Contex
     if (this.flags['file-name']) {
       throw new ValidationError('--file-name is only supported for a single URL.')
     }
-    const result = await mgmt.context.files.uploadFromUrls(urls.map((url) => ({ url })))
+    const result = await mgmt.context.files.uploadFromUrls(
+      urls.map((url) => ({ url, ...(folderPath !== undefined ? { folderPath } : {}) })),
+    )
     this.print(result, () => {
       const uploaded = renderTable(result.uploaded as unknown as Array<Record<string, unknown>>, [
         'uploadId',

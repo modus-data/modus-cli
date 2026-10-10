@@ -14,6 +14,8 @@ import { discoverMetadata, refreshTokens } from './oauth.js'
 /** Refresh this long before actual expiry — cheap insurance against clock skew and request latency. */
 const OAUTH_REFRESH_SKEW_MS = 60_000
 
+export const CLIENT_HEADERS = { 'X-Modus-Client': 'cli' }
+
 export type CommandFlags<T extends typeof Command> = Interfaces.InferredFlags<T['flags']>
 export type CommandArgs<T extends typeof Command> = Interfaces.InferredArgs<T['args']>
 
@@ -93,7 +95,7 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
   protected async modusClient(): Promise<Modus> {
     if (!this.clientInstance) {
       const { apiKey, baseUrl } = await this.resolveAuth()
-      this.clientInstance = new Modus({ apiKey, baseUrl })
+      this.clientInstance = new Modus({ apiKey, baseUrl, defaultHeaders: CLIENT_HEADERS })
     }
     return this.clientInstance
   }
@@ -101,7 +103,7 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
   protected async modusManagement(): Promise<ModusManagement> {
     if (!this.managementInstance) {
       const { apiKey, baseUrl } = await this.resolveAuth()
-      this.managementInstance = new ModusManagement({ apiKey, baseUrl })
+      this.managementInstance = new ModusManagement({ apiKey, baseUrl, defaultHeaders: CLIENT_HEADERS })
     }
     return this.managementInstance
   }

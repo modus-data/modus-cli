@@ -136,11 +136,17 @@ modus workflows run 42 "Run the weekly digest now"
 
 # Context
 modus context items list --context-type saved_query
+modus context items list --connection-id files --parent-uid "" --context-type file_folder_metadata
+modus context items list --connection-id files --parent-uid db-a --parent-uid PUBLIC --context-type file_upload
+modus context items move <uid> --destination-folder-uid <folderUid>
+modus context items move <uid> --destination-folder-uid ""
 modus context notes create "Q3 pricing" "We raised list price 8% in July."
 modus context files upload ./report.pdf
 modus context files upload ./docs --wait-until ready
+modus context files upload ./docs --folder-path reports
 modus context files upload-from-url https://example.com/report.pdf
-modus context files list --pretty
+modus context files get <uploadId>
+modus context files list
 modus context dashboards list --pretty
 modus context dashboards create --example > dashboard.json
 modus context dashboards create --file dashboard.json
@@ -155,8 +161,8 @@ modus runs cancel <runId>
 
 ## Features
 
-- **Scopes** — chat, create, deploy, evaluations, memories, supervision, MCP
-  configuration, ownership transfer.
+- **Scopes** — chat, create, deploy, evaluations, memories, supervision, Slack
+  and Microsoft Teams interfaces, MCP configuration, ownership transfer.
 - **Workflows** — create, trigger, run history, ownership transfer.
 - **Context** — organization context items, notes, saved queries, file uploads,
   dashboards (drafts, publishing, version history, access, ownership transfer)

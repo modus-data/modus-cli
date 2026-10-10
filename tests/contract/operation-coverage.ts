@@ -5,7 +5,7 @@
  * openapi/v1.json must appear here with an explicit decision: `mapped` (a
  * real command exists) or `excluded` (deliberately not CLI-facing, with a
  * reason and a CU ticket) — never silently absent. Checked in CI on every
- * PR touching the public specs (see the `openapi-contract` job in
+ * PR touching the public specs (see the `contract-checks` job in
  * `_reusable-branch-ci.yml`), not just at release time.
  */
 
@@ -25,6 +25,7 @@ export const OPERATIONS: Record<string, CoverageEntry> = {
   ContextItemsController_get: { status: 'mapped', command: 'modus context items get' },
   ContextItemsController_update: { status: 'mapped', command: 'modus context items update' },
   ContextItemsController_delete: { status: 'mapped', command: 'modus context items delete' },
+  ContextItemsController_move: { status: 'mapped', command: 'modus context items move' },
   ContextItemsController_listValues: { status: 'mapped', command: 'modus context items values' },
   ContextItemsController_lookup: { status: 'mapped', command: 'modus context items lookup' },
 
@@ -118,6 +119,10 @@ export const OPERATIONS: Record<string, CoverageEntry> = {
   ScopeSupervisionController_get: { status: 'mapped', command: 'modus scopes supervision get' },
   ScopeSupervisionController_set: { status: 'mapped', command: 'modus scopes supervision set' },
   ScopeSupervisionController_setActive: { status: 'mapped', command: 'modus scopes supervision set-active' },
+  ScopeInterfacesController_list: { status: 'mapped', command: 'modus scopes interfaces list' },
+  ScopeInterfacesController_add: { status: 'mapped', command: 'modus scopes interfaces add' },
+  ScopeInterfacesController_update: { status: 'mapped', command: 'modus scopes interfaces update' },
+  ScopeInterfacesController_delete: { status: 'mapped', command: 'modus scopes interfaces delete' },
   EvaluationsController_getConfig: { status: 'mapped', command: 'modus scopes evaluations get-config' },
   EvaluationsController_updateConfig: { status: 'mapped', command: 'modus scopes evaluations update-config' },
   EvaluationsController_triggerRun: { status: 'mapped', command: 'modus scopes evaluations trigger-run' },
