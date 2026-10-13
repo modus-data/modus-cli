@@ -1,5 +1,5 @@
 import { BaseCommand } from '../base-command.js'
-import { maskToken, parseOrgUuidFromToken, readStoredConfig } from '../config.js'
+import { maskToken, parseOrgUuidFromToken, readStoredConfig, tokenKindFromToken } from '../config.js'
 
 export default class Whoami extends BaseCommand<typeof Whoami> {
   static description =
@@ -15,12 +15,14 @@ export default class Whoami extends BaseCommand<typeof Whoami> {
     const orgUuid = parseOrgUuidFromToken(apiKey)
     const result = {
       orgUuid: orgUuid ?? null,
+      tokenKind: tokenKindFromToken(apiKey) ?? null,
       token: maskToken(apiKey),
       baseUrl: baseUrl ?? 'https://api.getmodus.com',
       authMethod: (process.env.MODUS_API_KEY ? 'env' : stored.oauth ? 'oauth' : 'pat') as 'env' | 'oauth' | 'pat',
     }
     this.print(result, () =>
       [`org:      ${result.orgUuid ?? '(unknown — unexpected token format)'}`,
+        `kind:     ${result.tokenKind ?? 'unknown'}`,
         `token:    ${result.token}`,
         `base url: ${result.baseUrl}`,
         `auth:     ${result.authMethod}`].join('\n'),

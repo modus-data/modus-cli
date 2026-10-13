@@ -68,10 +68,18 @@ export async function clearStoredConfig(): Promise<void> {
 }
 
 // Token format is `modus_<type>_<orgUuid>_<prefix>_<secret>` where type is one of
-// pat/oat/ort (packages/access-tokens/src/access-token.ts) — the org UUID is always
+// pat/sat/oat/ort (packages/access-tokens/src/access-token.ts) — the org UUID is always
 // the segment right after the type marker.
 const PAT_ORG_UUID_PATTERN =
-  /^modus_(?:pat|oat|ort)_([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})_/
+  /^modus_(?:pat|sat|oat|ort)_([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})_/
+
+const TOKEN_KIND_BY_MARKER = { pat: 'personal', sat: 'service', oat: 'oauth', ort: 'oauth' } as const
+
+/** Which kind of credential a token is, read from its type marker. */
+export function tokenKindFromToken(token: string): 'personal' | 'service' | 'oauth' | undefined {
+  const marker = /^modus_(pat|sat|oat|ort)_/.exec(token)?.[1] as keyof typeof TOKEN_KIND_BY_MARKER | undefined
+  return marker ? TOKEN_KIND_BY_MARKER[marker] : undefined
+}
 
 /** Org UUID is embedded in the token itself (`modus_<type>_<orgUuid>_<prefix>_<secret>`) — no API call needed. */
 export function parseOrgUuidFromToken(token: string): string | undefined {

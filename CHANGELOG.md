@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- Recognise service-account tokens (`modus_sat_…`); `whoami` reports the token `kind` (personal, service or oauth).
 - Requests carry `X-Modus-Client: cli`, so usage is attributed to the CLI.
 - `context items move UID --destination-folder-uid FOLDER_UID` moves a live file
   or Files folder. An empty `--destination-folder-uid` moves to the Files root.
