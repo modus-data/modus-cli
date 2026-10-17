@@ -1,0 +1,7 @@
+{
+  "tests/unit/logo.test.ts": {
+    "no-control-regex": {
+      "count": 2
+    }
+  }
+}

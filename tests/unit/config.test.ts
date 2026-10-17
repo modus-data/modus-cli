@@ -2,7 +2,9 @@ import { chmod, mkdir, mkdtemp, rm, stat, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { maskToken, parseOrgUuidFromToken } from '../../src/config.js'
+import { maskToken, parseOrgUuidFromToken, tokenKindFromToken } from '../../src/config.js'
+
+const UUID = '00000000-0000-0000-0000-000000000004'
 
 describe('parseOrgUuidFromToken', () => {
   it('extracts the org uuid embedded in a PAT (modus_pat_<uuid>_<prefix>_<secret>)', () => {
@@ -19,9 +21,23 @@ describe('parseOrgUuidFromToken', () => {
     ).toBe('00000000-0000-0000-0000-000000000003')
   })
 
+  it('parses the org uuid from a service token', () => {
+    expect(parseOrgUuidFromToken(`modus_sat_${UUID}_0123456789abcdef_secret`)).toBe(UUID)
+  })
+
   it('returns undefined for a malformed token', () => {
     expect(parseOrgUuidFromToken('not-a-token')).toBeUndefined()
     expect(parseOrgUuidFromToken('modus_pat_notauuid_abcd_secret')).toBeUndefined()
+  })
+})
+
+describe('tokenKindFromToken', () => {
+  it('names the token kind', () => {
+    expect(tokenKindFromToken(`modus_sat_${UUID}_x_y`)).toBe('service')
+    expect(tokenKindFromToken(`modus_pat_${UUID}_x_y`)).toBe('personal')
+    expect(tokenKindFromToken(`modus_oat_${UUID}_x_y`)).toBe('oauth')
+    expect(tokenKindFromToken(`modus_ort_${UUID}_x_y`)).toBe('oauth')
+    expect(tokenKindFromToken('nope')).toBeUndefined()
   })
 })
 
