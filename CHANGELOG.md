@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- Workflow interface `config` for Slack and Teams is `accessMode`, `allowedEmails`, and `availableChannelIds`. An MCP interface accepts no config keys. Invalid config returns 422; sending the stored config back unchanged still succeeds.
 - `context custom-items list --search-query` (`GET /context/custom-items`) help describes word
   search: it returns rows that contain every word of the query, case-insensitive.
 - Recognise service-account tokens (`modus_sat_…`); `whoami` reports the token `kind` (personal, service or oauth).
