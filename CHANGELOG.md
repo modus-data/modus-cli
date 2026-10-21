@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- `connections selections CONNECTION_ID` lists the selectable units on a connection
+  (`GET /connections/{id}/selections`). `connections list` may include `selectionModel`.
 - Scope `connectionSet` rows must be a selectable unit. `scopes create` and `scopes update` reject a new row whose path is neither the whole connection nor one selectable unit of it, with 422 `root.not_a_root`. A row already stored can stay, and removing it still succeeds.
 - Workflow interface `config` for Slack and Teams is `accessMode`, `allowedEmails`, and `availableChannelIds`. An MCP interface accepts no config keys. Invalid config returns 422; sending the stored config back unchanged still succeeds.
 - `context custom-items list --search-query` (`GET /context/custom-items`) help describes word
