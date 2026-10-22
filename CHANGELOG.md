@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- Scope `interfaces` on `scopes create` and `scopes update` accept only MCP rows (`type` must be `mcp`). Each row has an optional id and name and a config. A row without an id or name is assigned one. Responses return id, type, name, and config.
 - `connections selections CONNECTION_ID` lists the selectable units on a connection
   (`GET /connections/{id}/selections`). `connections list` may include `selectionModel`.
 - Scope `connectionSet` rows must be a selectable unit. `scopes create` and `scopes update` reject a new row whose path is neither the whole connection nor one selectable unit of it, with 422 `root.not_a_root`. A row already stored can stay, and removing it still succeeds.
