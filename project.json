@@ -5,9 +5,6 @@
   "tags": ["scope:cli", "type:app", "lang:typescript"],
   "implicitDependencies": ["modus-sdk-typescript"],
   "targets": {
-    "typecheck": {
-      "dependsOn": [{ "projects": ["modus-sdk-typescript"], "target": "build" }]
-    },
     "build": {
       "executor": "nx:run-commands",
       "dependsOn": [{ "projects": ["modus-sdk-typescript"], "target": "build" }],
@@ -47,7 +44,7 @@
       ]
     },
     "lint": {
-      "dependsOn": ["typecheck"]
+      "dependsOn": [{ "projects": ["modus-sdk-typescript"], "target": "build" }]
     },
     "clean": {
       "executor": "nx:run-commands",
