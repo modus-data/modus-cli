@@ -2,7 +2,14 @@
 
 ## [Unreleased]
 
+- Scope `toolset` on create and update is a map of tool key to its configuration. A body shaped `{ "tools": [...] }` is rejected. Unknown keys are rejected.
+- Known scope `toolset` values are validated. Most tools take an array of strings. `file_publish` takes `{ actions: string[], rules?: { nameMode: "any" | "restricted", allowedNames: string[] } }`. Coding tools take an array of `{ connectionUid, repoOwner, repoName, branch }`. `sql_runner` entries are `VERB:connectionId:`, optionally followed by `database:schema`, where `VERB` is `SELECT`, `INSERT`, `UPDATE`, `DELETE`, or `CREATE`. A value that does not match is rejected with `toolset.bad_value`; an unknown key stays `toolset.unknown_key`. Resending an unchanged stored value succeeds, including a historical value the new check would reject, and removing it succeeds.
+- MCP config on `scopes create`, `scopes update`, and `scopes mcp-config` returns the effective config. Core tools are booleans. Tool exposure is version 1 with mode `subset` or `discovery`. A newly added exposure key must be one the scope can expose. A key already stored can be sent again or removed.
+- **Added:** `scopes evaluations cases add|update|delete` adds, changes, or removes one evaluation case. Omit `--case-id` on add and one is assigned. `delete` asks for confirmation unless `--yes` is passed. An empty `--task` is allowed. An update with neither field is rejected.
+- **Removed:** scope evaluation cases no longer include `createdAt` or `updatedAt`.
+- **Changed:** `scopes update` evaluation cases are `{id?, task, expectedOutput}`. Omit `id` on a new case and one is assigned. A repeated `id` is rejected. An empty `task` is allowed.
 - Scope `interfaces` on `scopes create` and `scopes update` accept only MCP rows (`type` must be `mcp`). Each row has an optional id and name and a config. A row without an id or name is assigned one. Responses return id, type, name, and config.
+- Workflow responses declare `trigger`, `workflowStructure`, and `agentSelection` as the published shapes. A non-schedule trigger has `schedule: null`, and a schedule leaves unused cadence fields null. Workflow interface `config` describes Slack and Teams access fields and an empty object for MCP.
 - `connections selections CONNECTION_ID` lists the selectable units on a connection
   (`GET /connections/{id}/selections`). `connections list` may include `selectionModel`.
 - Scope `connectionSet` rows must be a selectable unit. `scopes create` and `scopes update` reject a new row whose path is neither the whole connection nor one selectable unit of it, with 422 `root.not_a_root`. A row already stored can stay, and removing it still succeeds.

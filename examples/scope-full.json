@@ -8,7 +8,7 @@
   "model": "claude-sonnet-5",
   "toolset": {
     "memory": { "enabled": true },
-    "sql_runner": { "enabled": true, "selectors": ["<connection-id>"] }
+    "sql_runner": ["SELECT:<connection-id>:"]
   },
   "connectionSet": [],
   "contextSelections": [{ "kind": "static_ids", "staticIds": ["<context-item-uid>"] }],
