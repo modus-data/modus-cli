@@ -15,7 +15,9 @@ export default class ContextCustomItemsList extends BaseCommand<typeof ContextCu
 
   static flags = {
     ...BaseCommand.baseFlags,
-    'search-query': Flags.string({ description: 'Filter by search term.' }),
+    'search-query': Flags.string({
+      description: 'Word search: returns rows that contain every word of the query, case-insensitive.',
+    }),
     topic: Flags.string({ description: 'Filter by topic tag (repeatable).', multiple: true }),
     'page-size': Flags.integer({ description: 'Items per page (default 25, max 200).' }),
     'page-token': Flags.string({ description: 'Opaque page token from a previous response.' }),

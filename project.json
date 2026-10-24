@@ -23,7 +23,8 @@
         "default",
         "^production",
         "vitestHarness",
-        "{workspaceRoot}/apps/services/*/openapi/v1.json"
+        "{workspaceRoot}/apps/services/*/openapi/v1.json",
+        "{workspaceRoot}/distribution/clients/sdk-surface.json"
       ],
       "options": {
         "command": "vitest run --root distribution/clients/cli/modus-cli",
