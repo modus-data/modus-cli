@@ -7,7 +7,6 @@ export default class WorkflowsRun extends BaseCommand<typeof WorkflowsRun> {
 
   static examples = [
     '<%= config.bin %> workflows run 42 "Summarize yesterday\'s sales"',
-    '<%= config.bin %> workflows run weekly-digest "Run the weekly digest now"',
     '<%= config.bin %> workflows run 42 "Follow up" --thread SESSION_ID',
     '<%= config.bin %> workflows run 42 "Draft only" --version draft --json',
   ]

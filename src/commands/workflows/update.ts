@@ -22,7 +22,6 @@ export default class WorkflowsUpdate extends BaseCommand<typeof WorkflowsUpdate>
     body: Flags.string({ description: "Read update fields as JSON from stdin ('-')." }),
     name: Flags.string({ description: 'Workflow display name.' }),
     description: Flags.string({ description: 'One-paragraph description.' }),
-    guardrail: Flags.string({ description: 'Guardrail id (repeatable).', multiple: true }),
   }
 
   async run(): Promise<void> {
@@ -30,7 +29,6 @@ export default class WorkflowsUpdate extends BaseCommand<typeof WorkflowsUpdate>
     const body = mergeJsonBody(fileBody, {
       name: this.flags.name,
       description: this.flags.description,
-      guardrails: this.flags.guardrail,
     })
 
     const mgmt = await this.modusManagement()

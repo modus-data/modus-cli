@@ -9,7 +9,7 @@ export default class WorkflowsCreate extends BaseCommand<typeof WorkflowsCreate>
     'Create a workflow draft. Pass --name and --type for a minimal create; nested fields (trigger, agentSelection, workflowStructure) require --file/--body — see --example.'
 
   static examples = [
-    '<%= config.bin %> workflows create --name "Daily report" --type task',
+    '<%= config.bin %> workflows create --name "Daily report"',
     '<%= config.bin %> workflows create --example > workflow.json',
     '<%= config.bin %> workflows create --file workflow.json',
   ]
@@ -20,9 +20,12 @@ export default class WorkflowsCreate extends BaseCommand<typeof WorkflowsCreate>
     file: Flags.string({ description: 'Path to a JSON file with the full create body.' }),
     body: Flags.string({ description: "Read the full create body as JSON from stdin ('-')." }),
     name: Flags.string({ description: 'Workflow display name.' }),
-    type: Flags.string({ description: 'Workflow type.', options: ['task', 'workflow'], default: 'workflow' }),
+    type: Flags.string({
+      description: 'Workflow type. `task` is a deprecated alias the server stores as `workflow`.',
+      options: ['task', 'workflow'],
+      default: 'workflow',
+    }),
     description: Flags.string({ description: 'One-paragraph description.' }),
-    guardrail: Flags.string({ description: 'Guardrail id (repeatable).', multiple: true }),
   }
 
   async run(): Promise<void> {
@@ -36,7 +39,6 @@ export default class WorkflowsCreate extends BaseCommand<typeof WorkflowsCreate>
       name: this.flags.name,
       type: this.flags.type,
       description: this.flags.description,
-      guardrails: this.flags.guardrail,
     })
 
     if (typeof body.name !== 'string' || !body.name) {

@@ -23,10 +23,7 @@ export default class ScopesMemoriesUpdate extends BaseCommand<typeof ScopesMemor
     const body = mergeJsonBody(fileBody, { memory: this.flags.memory })
 
     const mgmt = await this.modusManagement()
-    const memory = await mgmt.scopes.memories(this.args.id).update(
-      this.args.memoryId,
-      body as unknown as MemoryUpdate,
-    )
-    this.print(memory, () => JSON.stringify(memory, null, 2))
+    await mgmt.scopes.memories(this.args.id).update(this.args.memoryId, body as unknown as MemoryUpdate)
+    this.print({ updated: true, memoryId: this.args.memoryId }, () => `Updated memory ${this.args.memoryId}.`)
   }
 }

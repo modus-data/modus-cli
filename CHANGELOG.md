@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+- **Breaking (pre-1.0):** `workflows create` and `workflows update` no longer take `--guardrail`. Workflows have no guardrails, so every call that set it failed with 400. `scopes create|update --guardrail` is unchanged.
+- **Fixed:** `scopes memories update` prints a confirmation (`{"updated":true,"memoryId":...}`) instead of `null`; the server answers 204 with no body.
+- **Fixed:** help and examples use numeric ids. `workflows get` said "id or slug", and examples passed slugs such as `weekly-digest`, which the server rejects with 400.
 - **Breaking (pre-1.0).** Scope `connectionSet` rows have one shape. `scopes create` and `scopes update` accept each entry only as `{ connection_id, path, preferences?, context_enabled? }`, where `path` is an array of strings, `preferences` an object and `context_enabled` a boolean. An empty path selects the whole connection. Any other field, a non-string path segment, an empty or null `connection_id`, or a null `connectionSet` is rejected with 400. A `scopes get` row can be sent back on update.
 - Scope `toolset` on create and update is a map of tool key to its configuration. A body shaped `{ "tools": [...] }` is rejected. Unknown keys are rejected.
 - Known scope `toolset` values are validated. Most tools take an array of strings. `file_publish` takes `{ actions: string[], rules?: { nameMode: "any" | "restricted", allowedNames: string[] } }`. Coding tools take an array of `{ connectionUid, repoOwner, repoName, branch }`. `sql_runner` entries are `VERB:connectionId:`, optionally followed by `database:schema`, where `VERB` is `SELECT`, `INSERT`, `UPDATE`, `DELETE`, or `CREATE`. A value that does not match is rejected with `toolset.bad_value`; an unknown key stays `toolset.unknown_key`. Resending an unchanged stored value succeeds, including a historical value the new check would reject, and removing it succeeds.

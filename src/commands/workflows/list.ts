@@ -11,7 +11,7 @@ export default class WorkflowsList extends BaseCommand<typeof WorkflowsList> {
     '<%= config.bin %> workflows list',
     '<%= config.bin %> workflows list --pretty',
     '<%= config.bin %> workflows list --search digest',
-    '<%= config.bin %> workflows list --type task',
+    '<%= config.bin %> workflows list --type workflow',
   ]
 
   static flags = {

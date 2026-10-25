@@ -11,7 +11,7 @@ export default class WorkflowsRunsList extends BaseCommand<typeof WorkflowsRunsL
   static examples = [
     '<%= config.bin %> workflows runs list 42',
     '<%= config.bin %> workflows runs list 42 --status completed --pretty',
-    '<%= config.bin %> workflows runs list weekly-digest --search digest',
+    '<%= config.bin %> workflows runs list 42 --search digest',
   ]
 
   static args = {
