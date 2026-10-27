@@ -51,7 +51,7 @@ export default class ScopesChat extends BaseCommand<typeof ScopesChat> {
     message: string,
     threadId: string | undefined,
   ): Promise<string | undefined> {
-    const stream = client.scopes.chatStream(scopeId, message, { model: this.flags.model as ChatModel, threadId })
+    const stream = client.scopes.chat(scopeId, message, { model: this.flags.model as ChatModel, threadId })
     let nextThreadId: string | undefined
     if (this.flags.json) {
       for await (const event of stream.eventStream()) {
@@ -61,7 +61,7 @@ export default class ScopesChat extends BaseCommand<typeof ScopesChat> {
     } else {
       for await (const token of stream.textStream()) process.stdout.write(token)
       process.stdout.write('\n')
-      nextThreadId = stream.getFinalResult().threadId
+      nextThreadId = (await stream).threadId
     }
     return nextThreadId
   }
