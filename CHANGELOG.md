@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- **Added:** `context items access update <uid> --file|--body -` replaces who can view and manage a note, saved query, link or uploaded file.
 - **Fixed:** `context compose` and `scopes context` no longer fail after 30 seconds. They now call the agent host (`agent.getmodus.com`, the host `chat` uses), where a compose may run for up to 90 seconds; one still running then fails with `UPSTREAM_TIMEOUT`. Before, a slower compose came back as a 503 and was retried while it was still running.
 - **Fixed:** `runs resume`, `runs stream`, `workflows run` and `workflow-actions execute` exit non-zero when the run ends with an `error` or `stream_timeout` frame (exit 1, like a 5xx), instead of 0. With `--json` the frame is still printed to stdout first.
 - **Changed:** an error prints its `code` and `requestId` on stderr, each on its own line under the message; stdout keeps only JSON / NDJSON.
