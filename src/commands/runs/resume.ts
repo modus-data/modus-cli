@@ -31,13 +31,6 @@ export default class RunsResume extends BaseCommand<typeof RunsResume> {
       sessionId: this.flags.session,
       decision: this.flags.decision as 'approve' | 'deny' | 'connected' | 'cancelled',
     })
-    if (this.flags.json) {
-      for await (const event of stream) this.log(JSON.stringify(event))
-      return
-    }
-    for await (const event of stream) {
-      if (event.type === 'token') process.stdout.write(event.content)
-    }
-    process.stdout.write('\n')
+    await this.printRunEvents(stream, this.flags.json)
   }
 }
