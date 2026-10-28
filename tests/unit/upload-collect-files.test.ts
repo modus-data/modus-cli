@@ -1,6 +1,7 @@
 import { mkdir, mkdtemp, rm, symlink, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { ValidationError } from '@getmodus/sdk'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { collectFiles } from '../../src/commands/context/files/upload.js'
 
@@ -13,6 +14,16 @@ describe('collectFiles', () => {
 
   afterEach(async () => {
     await rm(dir, { recursive: true, force: true })
+  })
+
+  it('rejects a missing path with ValidationError, so the CLI exits 3', async () => {
+    await expect(collectFiles([join(dir, 'missing.txt')], true)).rejects.toBeInstanceOf(ValidationError)
+  })
+
+  it('rejects a path under a regular file (ENOTDIR) with ValidationError', async () => {
+    const file = join(dir, 'a.txt')
+    await writeFile(file, 'a')
+    await expect(collectFiles([join(file, 'child.txt')], true)).rejects.toBeInstanceOf(ValidationError)
   })
 
   it('follows a symlinked file passed explicitly, same as a regular file', async () => {

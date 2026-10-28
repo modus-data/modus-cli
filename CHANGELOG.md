@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- **Fixed:** `context files upload` of a path that does not exist (or runs through a regular file) exits 3 (invalid input), not 1.
 - **Breaking (pre-1.0):** `workflows create` and `workflows update` no longer take `--guardrail`. Workflows have no guardrails, so every call that set it failed with 400. `scopes create|update --guardrail` is unchanged.
 - **Fixed:** `scopes memories update` and `scopes memories delete` of a memory that does not exist exit with the not-found code; with memory off for the organization they reported success.
 - **Fixed:** `scopes memories update` prints a confirmation (`{"updated":true,"memoryId":...}`) instead of `null`; the server answers 204 with no body.

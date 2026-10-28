@@ -1,6 +1,7 @@
 import { readdir, stat } from 'node:fs/promises'
 import { dirname, join, relative } from 'node:path'
 import { Args, Flags } from '@oclif/core'
+import { ValidationError } from '@getmodus/sdk'
 import type { UploadDirResult, UploadFileInput, UploadProgress, WaitUntil } from '@getmodus/sdk/management'
 import { BaseCommand } from '../../../base-command.js'
 import { renderTable } from '../../../output.js'
@@ -21,6 +22,17 @@ function renderUploadDirResult(result: UploadDirResult): string {
   if (result.failed.length === 0) return uploadedTable
   const failedTable = renderTable(result.failed as unknown as Array<Record<string, unknown>>, ['path', 'error'])
   return `${uploadedTable}\n\nFailed (${result.failed.length}):\n${failedTable}`
+}
+
+/** A missing path (or one under a regular file, ENOTDIR) is bad input: ValidationError makes the CLI exit 3, as the SDK does. */
+async function statInput(path: string) {
+  try {
+    return await stat(path)
+  } catch (error) {
+    const code = (error as { code?: unknown }).code
+    if (code === 'ENOENT' || code === 'ENOTDIR') throw new ValidationError(`No such file or directory: ${path}`)
+    throw error
+  }
 }
 
 /** Same skip rules as the SDK walk: no hidden names, no symlink follow. */
@@ -46,7 +58,7 @@ export async function walkFiles(root: string, recursive: boolean): Promise<strin
 export async function collectFiles(paths: readonly string[], recursive: boolean): Promise<UploadFileInput[]> {
   const files: UploadFileInput[] = []
   for (const path of paths) {
-    const pathStat = await stat(path)
+    const pathStat = await statInput(path)
     if (pathStat.isDirectory()) {
       for (const file of await walkFiles(path, recursive)) {
         // Relative to each explicitly requested root's parent so multi-root
@@ -108,7 +120,7 @@ export default class ContextFilesUpload extends BaseCommand<typeof ContextFilesU
     // several files, a directory, or a mix — reports as a batch with progress.
     if (paths.length === 1) {
       const only = paths[0] as string
-      const pathStat = await stat(only)
+      const pathStat = await statInput(only)
       if (!pathStat.isDirectory()) {
         const file = await mgmt.context.files.upload(only, {
           waitUntil,
