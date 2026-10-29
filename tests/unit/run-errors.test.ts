@@ -65,6 +65,14 @@ describe('error output', () => {
     })
   })
 
+  it('prints the traceId, which also names a request that never reached Modus', async () => {
+    const { cmd } = command()
+    const error = new ModusError('Network error', { traceId: '4bf92f3577b34da6a3ce929d0e0e4736' })
+    await expect(cmd.catch(error)).rejects.toMatchObject({
+      message: 'Network error\ntraceId: 4bf92f3577b34da6a3ce929d0e0e4736',
+    })
+  })
+
   it('omits what the error does not carry', async () => {
     const { cmd } = command()
     await expect(cmd.catch(new ModusError('boom'))).rejects.toMatchObject({ message: 'boom' })

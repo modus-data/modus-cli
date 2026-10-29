@@ -20,6 +20,8 @@ function stubFetch(body: unknown) {
   return fetch
 }
 
+const TRACEPARENT = /^00-[0-9a-f]{32}-[0-9a-f]{16}-00$/
+
 describe('CLI requests identify the CLI', () => {
   afterEach(() => {
     delete process.env.MODUS_API_KEY
@@ -33,7 +35,10 @@ describe('CLI requests identify the CLI', () => {
 
     await (await command[factory]()).http.get('/api/v1/scopes')
 
-    expect(fetch.mock.calls[0]?.[1]?.headers).toMatchObject({ 'X-Modus-Client': 'cli' })
+    expect(fetch.mock.calls[0]?.[1]?.headers).toMatchObject({
+      'X-Modus-Client': 'cli',
+      traceparent: expect.stringMatching(TRACEPARENT),
+    })
   })
 
   it('login --token', async () => {
@@ -43,6 +48,9 @@ describe('CLI requests identify the CLI', () => {
 
     await command.run()
 
-    expect(fetch.mock.calls[0]?.[1]?.headers).toMatchObject({ 'X-Modus-Client': 'cli' })
+    expect(fetch.mock.calls[0]?.[1]?.headers).toMatchObject({
+      'X-Modus-Client': 'cli',
+      traceparent: expect.stringMatching(TRACEPARENT),
+    })
   })
 })
