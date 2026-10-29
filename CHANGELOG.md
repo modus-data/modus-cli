@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- **Fixed (server):** `runs stream --last-event-id` with the id of the run's final event exits at once instead of hanging. A missing scope or workflow says `Scope not found` / `Workflow not found`, with `info.scopeId` / `info.workflowId`.
 - **Added:** a failed command prints a `traceId:` line under `requestId:`; quote both to support. Every request carries a W3C `traceparent`, which names the call even when it never reached Modus.
 - **Added:** `context items access update <uid> --file|--body -` replaces who can view and manage a note, saved query, link or uploaded file.
 - **Fixed:** `context compose` and `scopes context` no longer fail after 30 seconds. They now call the agent host (`agent.getmodus.com`, the host `chat` uses), where a compose may run for up to 90 seconds; one still running then fails with `UPSTREAM_TIMEOUT`. Before, a slower compose came back as a 503 and was retried while it was still running.
