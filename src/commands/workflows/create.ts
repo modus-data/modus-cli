@@ -16,7 +16,7 @@ export default class WorkflowsCreate extends BaseCommand<typeof WorkflowsCreate>
 
   static flags = {
     ...BaseCommand.baseFlags,
-    example: Flags.boolean({ description: 'Print an example workflow JSON to stdout and exit.' }),
+    example: Flags.boolean({ description: 'Print an example workflow JSON to stdout and exit. Replace its PLACEHOLDER_* values before passing it back.' }),
     file: Flags.string({ description: 'Path to a JSON file with the full create body.' }),
     body: Flags.string({ description: "Read the full create body as JSON from stdin ('-')." }),
     name: Flags.string({ description: 'Workflow display name.' }),

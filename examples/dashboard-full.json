@@ -12,13 +12,7 @@
         "config": {}
       }
     ],
-    "filters": [],
-    "layout": {
-      "elements": {
-        "revenue-table": { "x": 0, "y": 0, "w": 12, "h": 4 }
-      },
-      "filterConfigs": {}
-    }
+    "filters": []
   },
   "access": {
     "visibility": "private",

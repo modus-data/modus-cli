@@ -1,6 +1,6 @@
 {
   "name": "Revenue Analyst",
-  "description": "Sample revenue & ARR analyst scope. Edit or delete any field you don't need.",
+  "description": "Sample revenue & ARR analyst scope. Replace every PLACEHOLDER_* value (create refuses them) and delete any field you don't need.",
   "instructions": [
     "You are a revenue analyst. Answer questions about ARR, revenue, and growth using org context and connected data.",
     "Cite the tables or queries you rely on when possible."
@@ -8,9 +8,9 @@
   "model": "claude-sonnet-5",
   "toolset": {
     "memory": { "enabled": true },
-    "sql_runner": ["SELECT:<connection-id>:"]
+    "sql_runner": ["SELECT:PLACEHOLDER_CONNECTION_ID:"]
   },
   "connectionSet": [],
-  "contextSelections": [{ "kind": "static_ids", "staticIds": ["<context-item-uid>"] }],
+  "contextSelections": [{ "kind": "static_ids", "staticIds": ["PLACEHOLDER_CONTEXT_ITEM_UID"] }],
   "guardrails": ["no-pii"]
 }

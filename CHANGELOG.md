@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+- **Fixed:** the published CLI depends on exactly the `@getmodus/sdk` version it was built and tested against, instead of a caret on the latest SDK on npm. A CLI released before its SDK used to install an older SDK and crash in `chat`, `scopes chat` and `context items access update` (`stream.textStream is not a function`, `updateAccess is not a function`).
+- **Changed:** every `--file` and `--body -` command refuses a body that still has a `PLACEHOLDER_*` value, naming each one (exit 3). The `scopes create`, `workflows create` and `context dashboards create` `--example` bodies mark the ids you must supply that way: `scopes create --example` used to print `<connection-id>` and `<context-item-uid>`, which were accepted and deployed as an active scope, and `workflows create --example` named scope `17`.
+- **Changed:** `context dashboards create --example` leaves tile positions out (new tiles get default places); set them with `context dashboards layout update`, whose `layout.json` shape the README now shows, with `access.json`.
+- **Fixed:** the README shows tokens as `modus_pat_…` and run ids as UUIDs.
 - **Fixed (server):** `runs stream --last-event-id` with the id of the run's final event exits at once instead of hanging. A missing scope or workflow says `Scope not found` / `Workflow not found`, with `info.scopeId` / `info.workflowId`.
 - **Added:** a failed command prints a `traceId:` line under `requestId:`; quote both to support. Every request carries a W3C `traceparent`, which names the call even when it never reached Modus.
 - **Added:** `context items access update <uid> --file|--body -` replaces who can view and manage a note, saved query, link or uploaded file.
