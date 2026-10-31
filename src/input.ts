@@ -18,7 +18,11 @@ function placeholderPaths(value: unknown, path: string): string[] {
   }
   if (Array.isArray(value)) return value.flatMap((item, index) => placeholderPaths(item, `${path}[${index}]`))
   if (value !== null && typeof value === 'object') {
-    return Object.entries(value).flatMap(([key, item]) => placeholderPaths(item, path ? `${path}.${key}` : key))
+    // A key can be one too: a toolset grant is keyed by its connection id.
+    return Object.entries(value).flatMap(([key, item]) => [
+      ...placeholderPaths(key, path),
+      ...placeholderPaths(item, path ? `${path}.${key}` : key),
+    ])
   }
   return []
 }

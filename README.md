@@ -157,6 +157,35 @@ modus runs list-active --pretty
 modus runs cancel <runId>
 ```
 
+### Scope toolsets
+
+Edit `toolset` in the JSON from `modus scopes create --example`, then pass it via
+`--file` or `--body -` to create/update. Integration keys are catalog platform keys;
+each grants actions on an explicit lowercase connection UUID:
+
+```json
+{
+  "toolset": {
+    "postgresql": {
+      "byConnection": {
+        "11111111-1111-4111-8111-111111111111": { "actions": ["query"] }
+      }
+    },
+    "memory": { "enabled": true }
+  }
+}
+```
+
+Replace the UUID with your chosen PostgreSQL connection. Other SQL platforms use their
+own platform key and the same `query` action. For other integrations, use operation IDs
+from `modus tools list`, with optional slot `rules.allowedChannelIds` and
+`rules.allowedChannelNames`. Grants stay separate per connection.
+
+The API validates toolsets; the CLI does not translate or bind them. Flat `{ actions }`,
+integration action arrays, `scope`/personal encodings, action suffixes and unknown keys
+(including the retired `sql_runner`, `looker_bi`, `langfuse_observability` and `*_analytics`)
+return 422, even when resending a stored value. General tools, MCP, Pipedream and Coding formats are unchanged.
+
 ### Example bodies
 
 `--example` prints a starting body with a `PLACEHOLDER_*` value wherever an id from your org

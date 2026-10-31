@@ -8,7 +8,11 @@
   "model": "claude-sonnet-5",
   "toolset": {
     "memory": { "enabled": true },
-    "sql_runner": ["SELECT:PLACEHOLDER_CONNECTION_ID:"]
+    "postgresql": {
+      "byConnection": {
+        "PLACEHOLDER_CONNECTION_ID": { "actions": ["query"] }
+      }
+    }
   },
   "connectionSet": [],
   "contextSelections": [{ "kind": "static_ids", "staticIds": ["PLACEHOLDER_CONTEXT_ITEM_UID"] }],

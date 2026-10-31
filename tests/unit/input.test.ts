@@ -77,12 +77,12 @@ describe('readJsonBody placeholder refusal', () => {
 
   it('names every placeholder left in a --file body, with its JSON path', async () => {
     const file = await bodyFile(
-      JSON.stringify({ toolset: { sql_runner: ['SELECT:PLACEHOLDER_CONNECTION_ID:'] }, ok: 'real', n: 1 }),
+      JSON.stringify({ toolset: { postgresql: { byConnection: { PLACEHOLDER_CONNECTION_ID: { actions: ['query'] } } } }, ok: 'real', n: 1 }),
     )
     const error = await readJsonBody({ file }).catch((e: unknown) => e)
     expect(error).toBeInstanceOf(ValidationError)
     expect((error as Error).message).toBe(
-      `${file} still has example placeholders: toolset.sql_runner[0] (PLACEHOLDER_CONNECTION_ID). Replace each PLACEHOLDER_* with a real value from your org, or delete the field.`,
+      `${file} still has example placeholders: toolset.postgresql.byConnection (PLACEHOLDER_CONNECTION_ID). Replace each PLACEHOLDER_* with a real value from your org, or delete the field.`,
     )
   })
 
