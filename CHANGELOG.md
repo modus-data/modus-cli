@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- **Added:** `scopes mcp-exposure-catalog <id>` lists the tools a scope can expose to MCP clients. `--file` or `--body -` previews unsaved edits: each field you send (`toolset`, `connectionSet`, `mcpToolExposure`) replaces that field of the stored draft for this call, and fields you leave out keep their stored values. With neither, the stored draft is used. Nothing is saved.
 - **Fixed:** the published CLI depends on exactly the `@getmodus/sdk` version it was built and tested against, instead of a caret on the latest SDK on npm. A CLI released before its SDK used to install an older SDK and crash in `chat`, `scopes chat` and `context items access update` (`stream.textStream is not a function`, `updateAccess is not a function`).
 - **Changed:** every `--file` and `--body -` command refuses a body that still has a `PLACEHOLDER_*` value, naming each one (exit 3). The `scopes create`, `workflows create` and `context dashboards create` `--example` bodies mark the ids you must supply that way: `scopes create --example` used to print `<connection-id>` and `<context-item-uid>`, which were accepted and deployed as an active scope, and `workflows create --example` named scope `17`.
 - **Changed:** `context dashboards create --example` leaves tile positions out (new tiles get default places); set them with `context dashboards layout update`, whose `layout.json` shape the README now shows, with `access.json`.
