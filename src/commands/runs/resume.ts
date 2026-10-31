@@ -3,16 +3,15 @@ import { BaseCommand } from '../../base-command.js'
 
 export default class RunsResume extends BaseCommand<typeof RunsResume> {
   static description =
-    'Resume a run awaiting human input (approval gate). Replace PLACEHOLDER_RUN_ID and PLACEHOLDER_SESSION_ID with values from the run or `runs list-active`.'
+    'Resume a run awaiting human input (approval gate) with a decision. Replace PLACEHOLDER_RUN_ID and PLACEHOLDER_SESSION_ID with values from the run or `runs list-active`.'
 
   static examples = [
-    '<%= config.bin %> runs resume PLACEHOLDER_RUN_ID --session PLACEHOLDER_SESSION_ID --decision approve "Looks good, proceed."',
-    '<%= config.bin %> runs resume PLACEHOLDER_RUN_ID --session PLACEHOLDER_SESSION_ID --decision deny "Need more detail." --json',
+    '<%= config.bin %> runs resume PLACEHOLDER_RUN_ID --session PLACEHOLDER_SESSION_ID --decision approve',
+    '<%= config.bin %> runs resume PLACEHOLDER_RUN_ID --session PLACEHOLDER_SESSION_ID --decision deny --json',
   ]
 
   static args = {
     runId: Args.string({ description: 'Run id.', required: true }),
-    message: Args.string({ description: 'Message accompanying the decision (quote it).', required: false, ignoreStdin: true }),
   }
 
   static flags = {
@@ -29,17 +28,9 @@ export default class RunsResume extends BaseCommand<typeof RunsResume> {
   async run(): Promise<void> {
     const client = await this.modusClient()
     const stream = client.workflows.runs.resume(this.args.runId, {
-      message: this.args.message ?? '',
       sessionId: this.flags.session,
       decision: this.flags.decision as 'approve' | 'deny' | 'connected' | 'cancelled',
     })
-    if (this.flags.json) {
-      for await (const event of stream) this.log(JSON.stringify(event))
-      return
-    }
-    for await (const event of stream) {
-      if (event.type === 'token') process.stdout.write(event.content)
-    }
-    process.stdout.write('\n')
+    await this.printRunEvents(stream, this.flags.json)
   }
 }

@@ -7,7 +7,7 @@ export default class ScopesContext extends BaseCommand<typeof ScopesContext> {
 
   static examples = [
     '<%= config.bin %> scopes context 42 "What tables describe revenue?"',
-    '<%= config.bin %> scopes context revenue-analysis "ARR by region" --limit 5',
+    '<%= config.bin %> scopes context 42 "ARR by region" --limit 5',
   ]
 
   static args = {

@@ -137,6 +137,7 @@ modus context items list --connection-id files --parent-uid "" --context-type fi
 modus context items list --connection-id files --parent-uid db-a --parent-uid PUBLIC --context-type file_upload
 modus context items move <uid> --destination-folder-uid <folderUid>
 modus context items move <uid> --destination-folder-uid ""
+modus context items access update <uid> --file access.json
 modus context notes create "Q3 pricing" "We raised list price 8% in July."
 modus context files upload ./report.pdf
 modus context files upload ./docs --wait-until ready

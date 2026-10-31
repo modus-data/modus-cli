@@ -5,8 +5,10 @@ import {
   AuthenticationError,
   ModusError,
   NotFoundError,
+  StreamTimeoutError,
   UnprocessableError,
   ValidationError,
+  type RunEvent,
 } from '@getmodus/sdk'
 import { readStoredConfig, writeStoredConfig } from './config.js'
 import { discoverMetadata, refreshTokens } from './oauth.js'
@@ -114,10 +116,33 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
     this.log(pretty ? render() : JSON.stringify(value))
   }
 
+  /**
+   * Writes a run's events to stdout: NDJSON with `json`, else the streamed text. A run that
+   * ends with an `error` or `stream_timeout` frame fails the command like an HTTP error.
+   */
+  protected async printRunEvents(events: AsyncIterable<RunEvent>, json: boolean): Promise<void> {
+    try {
+      for await (const event of events) {
+        if (json) this.log(JSON.stringify(event))
+        else if (event.type === 'token') process.stdout.write(event.content)
+        if (event.type === 'error') throw new ModusError(event.message, { requestId: event.requestId })
+        if (event.type === 'stream_timeout') throw new StreamTimeoutError()
+      }
+    } finally {
+      if (!json) process.stdout.write('\n')
+    }
+  }
+
+  /** The message, then the `code` and `requestId` to quote to support, on stderr. */
   public async catch(error: unknown): Promise<never> {
     if (error instanceof ModusError) {
       const detail = 'errors' in error && error.errors !== undefined ? ` ${JSON.stringify(error.errors)}` : ''
-      this.error(`${error.message}${detail}`, { exit: exitCodeForError(error) })
+      const lines = [
+        `${error.message}${detail}`,
+        ...(error.code ? [`code: ${error.code}`] : []),
+        ...(error.requestId ? [`requestId: ${error.requestId}`] : []),
+      ]
+      this.error(lines.join('\n'), { exit: exitCodeForError(error) })
     }
     throw error
   }

@@ -20,6 +20,5 @@
         "instructions": "Summarize the last 7 days of revenue and flag anomalies."
       }
     ]
-  },
-  "guardrails": ["no-pii"]
+  }
 }

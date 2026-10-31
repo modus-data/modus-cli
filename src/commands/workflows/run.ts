@@ -7,7 +7,6 @@ export default class WorkflowsRun extends BaseCommand<typeof WorkflowsRun> {
 
   static examples = [
     '<%= config.bin %> workflows run 42 "Summarize yesterday\'s sales"',
-    '<%= config.bin %> workflows run weekly-digest "Run the weekly digest now"',
     '<%= config.bin %> workflows run 42 "Follow up" --thread SESSION_ID',
     '<%= config.bin %> workflows run 42 "Draft only" --version draft --json',
   ]
@@ -38,13 +37,6 @@ export default class WorkflowsRun extends BaseCommand<typeof WorkflowsRun> {
     })
     // stderr, not this.log/stdout: --json's stdout must stay pure JSON lines for `| jq`.
     process.stderr.write(`Run started: ${stream.runId}\n`)
-    if (this.flags.json) {
-      for await (const event of stream) this.log(JSON.stringify(event))
-      return
-    }
-    for await (const event of stream) {
-      if (event.type === 'token') process.stdout.write(event.content)
-    }
-    process.stdout.write('\n')
+    await this.printRunEvents(stream, this.flags.json)
   }
 }

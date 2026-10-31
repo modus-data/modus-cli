@@ -5,7 +5,7 @@ import { checkPageSize } from '../../../validation.js'
 
 export default class ContextItemsValues extends BaseCommand<typeof ContextItemsValues> {
   static description =
-    'List sampled values for a context item field. Replace PLACEHOLDER_UID with a real uid whose --context-type matches and whose content has an array at --content-key-path (e.g. enumValues).'
+    'List the elements of an array field in one context item, as index/value rows. Replace PLACEHOLDER_UID with a real uid whose --context-type matches and whose content has an array at --content-key-path (e.g. enumValues).'
 
   static examples = [
     '<%= config.bin %> context items values PLACEHOLDER_UID --context-type table_column --content-key-path enumValues',
@@ -19,7 +19,7 @@ export default class ContextItemsValues extends BaseCommand<typeof ContextItemsV
   static flags = {
     ...BaseCommand.baseFlags,
     'context-type': Flags.string({ description: 'Context type of the item.', required: true }),
-    'content-key-path': Flags.string({ description: 'Dot-path to the field within content (e.g. columns.email).', required: true }),
+    'content-key-path': Flags.string({ description: 'Dot-path to the array within content (e.g. enumValues).', required: true }),
     'page-size': Flags.integer({ description: 'Items per page (default 25, max 200).' }),
     'page-token': Flags.string({ description: 'Opaque page token from a previous response.' }),
   }

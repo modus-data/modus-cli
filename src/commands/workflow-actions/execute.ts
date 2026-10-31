@@ -60,13 +60,6 @@ export default class WorkflowActionsExecute extends BaseCommand<typeof WorkflowA
       source: this.flags.source as WorkflowActionRequest['source'],
     })
     process.stderr.write(`Run started: ${stream.runId}\n`)
-    if (this.flags.json) {
-      for await (const event of stream) this.log(JSON.stringify(event))
-      return
-    }
-    for await (const event of stream) {
-      if (event.type === 'token') process.stdout.write(event.content)
-    }
-    process.stdout.write('\n')
+    await this.printRunEvents(stream, this.flags.json)
   }
 }
