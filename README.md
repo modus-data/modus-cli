@@ -125,6 +125,10 @@ modus scopes create --example > scope.json  # full config fixture: edit it first
 modus scopes create --file scope.json
 modus scopes deploy 42
 
+# Preview, then apply a connection selection (`setConnectionPreferences` in selection.json)
+modus scopes selection-ops apply 42 --validate-only --file selection.json
+modus scopes selection-ops apply 42 --file selection.json
+
 # Workflows
 modus workflows list --pretty
 modus workflows runs list 7
@@ -222,6 +226,11 @@ set them afterwards with `layout update`.
 
 - **Scopes** — chat, create, deploy, evaluations, memories, supervision, Slack
   and Microsoft Teams interfaces, MCP configuration, ownership transfer.
+  `scopes update` replaces whole lists such as `connectionSet`, `contextSelections`,
+  and `evaluations`. Change one evaluation case with `scopes evaluations cases`, and
+  one connection's selection with `scopes selection-ops apply` (`--validate-only`
+  previews and does not write). `selectRoot`, `deselectRoot`, and `setRootDeepRules`
+  are deprecated.
 - **Workflows** — create, trigger, run history, ownership transfer.
 - **Context** — organization context items, notes, saved queries, file uploads,
   dashboards (drafts, publishing, version history, access, ownership transfer)
