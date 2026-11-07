@@ -17,7 +17,7 @@
     "test": {
       "dependsOn": ["build"],
       "inputs": [
-        "default",
+        "testSources",
         "^production",
         "vitestHarness",
         "{workspaceRoot}/apps/services/*/openapi/v1.json",
