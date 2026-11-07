@@ -1,9 +1,10 @@
-import { mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { mkdtemp, readdir, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { Readable } from 'node:stream'
 import { afterEach, describe, expect, it } from 'vitest'
 import { ValidationError } from '@getmodus/sdk'
+import { readExampleFixture } from '../../src/examples.js'
 import { mergeJsonBody, readJsonBody } from '../../src/input.js'
 
 /** Temporarily swaps process.stdin for a Readable so readJsonBody's stdin path is testable. */
@@ -57,6 +58,50 @@ describe('readJsonBody', () => {
   it('rejects a --body value other than "-" instead of silently returning {}', async () => {
     await expect(readJsonBody({ body: '{"name":"inline"}' })).rejects.toThrow(ValidationError)
     await expect(readJsonBody({ body: '{"name":"inline"}' })).rejects.toThrow(/only accepts '-'/)
+  })
+})
+
+describe('readJsonBody placeholder refusal', () => {
+  const tmpFiles: string[] = []
+  afterEach(async () => {
+    await Promise.all(tmpFiles.splice(0).map((dir) => rm(dir, { recursive: true, force: true })))
+  })
+
+  async function bodyFile(content: string): Promise<string> {
+    const dir = await mkdtemp(join(tmpdir(), 'modus-cli-test-'))
+    tmpFiles.push(dir)
+    const file = join(dir, 'body.json')
+    await writeFile(file, content)
+    return file
+  }
+
+  it('names every placeholder left in a --file body, with its JSON path', async () => {
+    const file = await bodyFile(
+      JSON.stringify({ toolset: { postgresql: { byConnection: { PLACEHOLDER_CONNECTION_ID: { actions: ['query'] } } } }, ok: 'real', n: 1 }),
+    )
+    const error = await readJsonBody({ file }).catch((e: unknown) => e)
+    expect(error).toBeInstanceOf(ValidationError)
+    expect((error as Error).message).toBe(
+      `${file} still has example placeholders: toolset.postgresql.byConnection (PLACEHOLDER_CONNECTION_ID). Replace each PLACEHOLDER_* with a real value from your org, or delete the field.`,
+    )
+  })
+
+  it('refuses a placeholder piped on stdin', async () => {
+    const result = withStdin(JSON.stringify({ elements: [{ elementId: 'PLACEHOLDER_ELEMENT_ID' }] }), () =>
+      readJsonBody({ body: '-' }),
+    )
+    await expect(result).rejects.toThrow(/^stdin still has example placeholders: elements\[0\]\.elementId /)
+  })
+
+  it('refuses every shipped --example fixture as printed, and accepts it once the placeholders are replaced', async () => {
+    const fixtures = (await readdir(join(import.meta.dirname, '../../examples'))).filter((name) => name.endsWith('.json'))
+    expect(fixtures.sort()).toEqual(['dashboard-full.json', 'scope-full.json', 'workflow-full.json'])
+    for (const name of fixtures) {
+      const printed = await readExampleFixture(name as Parameters<typeof readExampleFixture>[0])
+      await expect(readJsonBody({ file: await bodyFile(printed) })).rejects.toThrow(/still has example placeholders/)
+      const edited = printed.replace(/PLACEHOLDER_[A-Z0-9_]+/g, 'real-value')
+      expect(await readJsonBody({ file: await bodyFile(edited) })).toEqual(JSON.parse(edited))
+    }
   })
 })
 

@@ -1,7 +1,7 @@
 {
   "name": "Weekly Revenue Digest",
   "type": "workflow",
-  "description": "Sample scheduled workflow that runs one scope. Edit or delete any field you don't need.",
+  "description": "Sample scheduled workflow that runs one scope. Replace every PLACEHOLDER_* value (create refuses them) and delete any field you don't need. agent_id takes a number: replace its quoted placeholder, quotes included, with the scope's numeric id, e.g. \"agent_id\": 42.",
   "trigger": {
     "trigger_type": "schedule",
     "schedule": {
@@ -14,7 +14,7 @@
   "agentSelection": {
     "agents": [
       {
-        "agent_id": 17,
+        "agent_id": "PLACEHOLDER_SCOPE_ID",
         "priority_order": 1,
         "role": "analyst",
         "instructions": "Summarize the last 7 days of revenue and flag anomalies."

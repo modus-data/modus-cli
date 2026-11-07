@@ -15,7 +15,7 @@ export default class ScopesCreate extends BaseCommand<typeof ScopesCreate> {
 
   static flags = {
     ...BaseCommand.baseFlags,
-    example: Flags.boolean({ description: 'Print an example scope JSON to stdout and exit.' }),
+    example: Flags.boolean({ description: 'Print an example scope JSON to stdout and exit. Replace its PLACEHOLDER_* values before passing it back.' }),
     file: Flags.string({ description: 'Path to a JSON file with the full create body.' }),
     body: Flags.string({ description: "Read the full create body as JSON from stdin ('-')." }),
     name: Flags.string({ description: 'Scope display name.' }),

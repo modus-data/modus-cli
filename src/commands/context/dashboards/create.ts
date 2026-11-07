@@ -16,7 +16,7 @@ export default class ContextDashboardsCreate extends BaseCommand<typeof ContextD
 
   static flags = {
     ...BaseCommand.baseFlags,
-    example: Flags.boolean({ description: 'Print an example dashboard JSON to stdout and exit.' }),
+    example: Flags.boolean({ description: 'Print an example dashboard JSON to stdout and exit. Replace its PLACEHOLDER_* values before passing it back.' }),
     file: Flags.string({ description: 'Path to a JSON file with the full create body.' }),
     body: Flags.string({ description: "Read the full create body as JSON from stdin ('-')." }),
     title: Flags.string({ description: 'Dashboard title.' }),

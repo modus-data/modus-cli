@@ -133,7 +133,7 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
     }
   }
 
-  /** The message, then the `code` and `requestId` to quote to support, on stderr. */
+  /** The message, then the `code`, `requestId` and `traceId` to quote to support, on stderr. */
   public async catch(error: unknown): Promise<never> {
     if (error instanceof ModusError) {
       const detail = 'errors' in error && error.errors !== undefined ? ` ${JSON.stringify(error.errors)}` : ''
@@ -141,6 +141,7 @@ export abstract class BaseCommand<T extends typeof Command> extends Command {
         `${error.message}${detail}`,
         ...(error.code ? [`code: ${error.code}`] : []),
         ...(error.requestId ? [`requestId: ${error.requestId}`] : []),
+        ...(error.traceId ? [`traceId: ${error.traceId}`] : []),
       ]
       this.error(lines.join('\n'), { exit: exitCodeForError(error) })
     }

@@ -71,7 +71,7 @@ modus whoami             # confirm the resolved org/token/auth method
   server-side.
 - **CI/scripts:** set `MODUS_API_KEY` — it always overrides the stored
   credential and is the preferred way to authenticate non-interactively.
-- Avoid `modus login --token modus_xxx` — a token on the command line is
+- Avoid `modus login --token modus_pat_xxx` — a token on the command line is
   readable from shell history, `ps`, and CI logs.
 
 ### Staging (and other non-prod)
@@ -83,7 +83,7 @@ separate agent host; for Modus-owned `api.getmodus.com` /
 
 ```bash
 # Replace with your own staging PAT from the staging Modus app → Settings → API Tokens
-export MODUS_API_KEY='modus_<orgUuid>_<prefix>_<secret>'
+export MODUS_API_KEY='modus_pat_xxx'
 export MODUS_BASE_URL='https://api.staging.getmodus.com'
 
 modus whoami --pretty
@@ -121,14 +121,18 @@ modus scopes chat 42                        # same, but interactive
 
 # Create a scope, then deploy it
 modus scopes create --name "Revenue Analyst" --model claude-sonnet-5
-modus scopes create --example > scope.json  # full config fixture
+modus scopes create --example > scope.json  # full config fixture: edit it first
 modus scopes create --file scope.json
 modus scopes deploy 42
+
+# Preview, then apply a connection selection (`setConnectionPreferences` in selection.json)
+modus scopes selection-ops apply 42 --validate-only --file selection.json
+modus scopes selection-ops apply 42 --file selection.json
 
 # Workflows
 modus workflows list --pretty
 modus workflows runs list 7
-modus workflows runs get 7 wf_7_run_1
+modus workflows runs get 7 3f2b8c1e-5d4a-4e7b-9c0d-2a6f1e8b7c90   # run ids are UUIDs, from `runs list`
 modus workflows run 42 "Run the weekly digest now"
 
 # Context
@@ -146,7 +150,7 @@ modus context files upload-from-url https://example.com/report.pdf
 modus context files get <uploadId>
 modus context files list
 modus context dashboards list --pretty
-modus context dashboards create --example > dashboard.json
+modus context dashboards create --example > dashboard.json   # edit it first
 modus context dashboards create --file dashboard.json
 modus context dashboards publish <dashboardId> --expected-revision 1
 modus context dashboards elements list <dashboardId> --pretty
@@ -157,10 +161,76 @@ modus runs list-active --pretty
 modus runs cancel <runId>
 ```
 
+### Scope toolsets
+
+Edit `toolset` in the JSON from `modus scopes create --example`, then pass it via
+`--file` or `--body -` to create/update. Integration keys are catalog platform keys;
+each grants actions on an explicit lowercase connection UUID:
+
+```json
+{
+  "toolset": {
+    "postgresql": {
+      "byConnection": {
+        "11111111-1111-4111-8111-111111111111": { "actions": ["query"] }
+      }
+    },
+    "memory": { "enabled": true }
+  }
+}
+```
+
+Replace the UUID with your chosen PostgreSQL connection. Other SQL platforms use their
+own platform key and the same `query` action. For other integrations, use operation IDs
+from `modus tools list`, with optional slot `rules.allowedChannelIds` and
+`rules.allowedChannelNames`. Grants stay separate per connection.
+
+The API validates toolsets; the CLI does not translate or bind them. Flat `{ actions }`,
+integration action arrays, `scope`/personal encodings, action suffixes and unknown keys
+(including the retired `sql_runner`, `looker_bi`, `langfuse_observability` and `*_analytics`)
+return 422, even when resending a stored value. General tools, MCP, Pipedream and Coding formats are unchanged.
+
+### Example bodies
+
+`--example` prints a starting body with a `PLACEHOLDER_*` value wherever an id from your org
+belongs (`PLACEHOLDER_CONNECTION_ID`, `PLACEHOLDER_CONTEXT_ITEM_UID`, `PLACEHOLDER_SCOPE_ID`).
+Replace each one, or delete the field, before you pass the file back: every `--file` and
+`--body -` command refuses a body that still has a placeholder, and names where it is.
+`modus connections list` and `modus context items list` give you the ids.
+
+`access.json` for `context items access update` replaces all three settings:
+
+```json
+{
+  "visibility": "private",
+  "groupPermissions": {},
+  "sharedWith": [{ "email": "ana@your-company.com", "permission": "use" }]
+}
+```
+
+`layout.json` for `context dashboards layout update` moves or resizes tiles and filters on a
+draft. `elementId` is a tile or filter `id` (`context dashboards elements list` shows them), and
+the grid is 12 columns wide. `--expected-revision` overrides `expectedRevision`:
+
+```json
+{
+  "expectedRevision": 1,
+  "elements": [{ "elementId": "revenue-table", "layout": { "x": 0, "y": 0, "w": 12, "h": 4 } }]
+}
+```
+
+The `dashboards create --example` body leaves positions out, so new tiles get default places;
+set them afterwards with `layout update`.
+
 ## Features
 
 - **Scopes** — chat, create, deploy, evaluations, memories, supervision, Slack
   and Microsoft Teams interfaces, MCP configuration, ownership transfer.
+  `scopes update` replaces whole lists such as `connectionSet`, `contextSelections`,
+  and `evaluations`. Change one evaluation case with `scopes evaluations cases`, and
+  one connection's selection with `scopes selection-ops apply` (`--validate-only`
+  previews and does not write). `selectRoot`, `deselectRoot`, and `setRootDeepRules`
+  are deprecated.
 - **Workflows** — create, trigger, run history, ownership transfer.
 - **Context** — organization context items, notes, saved queries, file uploads,
   dashboards (drafts, publishing, version history, access, ownership transfer)

@@ -1,4 +1,5 @@
 import { Args, Flags } from '@oclif/core'
+import type { SupervisionView } from '@getmodus/sdk'
 import { BaseCommand } from '../../../base-command.js'
 
 export default class ScopesSupervisionGet extends BaseCommand<typeof ScopesSupervisionGet> {
@@ -17,7 +18,7 @@ export default class ScopesSupervisionGet extends BaseCommand<typeof ScopesSuper
     const mgmt = await this.modusManagement()
     const supervision = await mgmt.scopes
       .supervision(this.args.id)
-      .get({ view: this.flags.view as 'active' | 'draft' | undefined })
+      .get({ view: this.flags.view as SupervisionView | undefined })
     this.print(supervision, () => JSON.stringify(supervision, null, 2))
   }
 }
