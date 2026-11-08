@@ -23,7 +23,7 @@ pnpm nx run modus-cli:build
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 FILE="$TMP/[SDK Staging Smoke]-cli-files-$(date -u +%Y%m%dT%H%M%SZ).txt"
-printf 'sdk staging smoke cli context file — safe to leave\n' >"$FILE"
+printf 'sdk staging smoke cli context file — deleted by the next SDK smoke run\n' >"$FILE"
 
 # Exercise the CLI as a user installs it, not as it sits in the repo.
 # $CLI_ROOT/bin/run.js is not what ships: in-repo, src/ exists and tsx is a
