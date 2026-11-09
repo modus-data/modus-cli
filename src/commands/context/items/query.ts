@@ -6,7 +6,7 @@ export default class ContextItemsQuery extends BaseCommand<typeof ContextItemsQu
   static description = 'Run one read-only SQL statement over the context_items table. It sees only the items you can read.'
 
   static examples = [
-    `<%= config.bin %> context items query "SELECT context_type, count(*) AS items FROM context_items GROUP BY 1" --pretty`,
+    `<%= config.bin %> context items query "SELECT context_type, count(*)::int AS items FROM context_items GROUP BY 1" --pretty`,
   ]
 
   static args = {
