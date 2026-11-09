@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- **Added:** `context items query "<sql>"` runs one read-only SQL statement over the `context_items` table and prints its rows (`--pretty` for a table). It sees only the items you can read. `--max-rows` lowers the 1,000-row limit; the output says when rows were cut. Off by default per organization.
 - **Removed — breaking (pre-1.0):** `scopes create|update` JSON sends each `connectionSet` entry as `{ connection_id, preferences, context_enabled? }`; an entry with `path` or without `preferences` fails with 400 `legacy_entry` (exit 3). `scopes selection-ops apply` no longer takes `selectRoot`, `deselectRoot` or `setRootDeepRules`: use `setConnectionPreferences`, and `removeConnection` to remove a connection. `scopes get` still prints one row per included path, so turn it into one entry per connection before you send it back.
 - **Added:** a scope from `scopes list` or `scopes get` includes `generatedDescription` (`string` or `null`), the summary written for the scope. Null when none has been written.
 - **Added:** `scopes list|get` and `workflows list|get` take `--view active|draft|published`. `published` is the published version you can use. For workflows it is also type workflow only.
