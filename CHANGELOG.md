@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- **Added:** `context items query "<sql>"` runs one read-only SQL statement over the `context_items` table and prints its rows (`--pretty` for a table). It sees only the items you can read. `--max-rows` lowers the 1,000-row limit; the output says when rows were cut. Off by default per organization.
 - **Added:** a scope from `scopes list` or `scopes get` includes `generatedDescription` (`string` or `null`), the summary written for the scope. Null when none has been written.
 - **Added:** `scopes list|get` and `workflows list|get` take `--view active|draft|published`. `published` is the published version you can use. For workflows it is also type workflow only.
 - **Added:** `scopes selection-ops apply` applies selection changes to a scope. Pass `--file` or `--body -` with `ops` using `setConnectionPreferences`. `--validate-only` runs the same checks and prints the scope that would be saved, without writing; that output carries `validateOnly: true` and a committed one does not, so a preview still needs a second call to save. `selectRoot`, `deselectRoot`, and `setRootDeepRules` are deprecated.
