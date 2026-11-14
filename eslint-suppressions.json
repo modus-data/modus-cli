@@ -1,7 +1,56 @@
 {
+  "src/commands/connections/list.ts": {
+    "modus/platform-name/bigquery": {
+      "count": 2
+    },
+    "modus/platform-name/postgresql": {
+      "count": 2
+    }
+  },
+  "src/commands/conversations/list.ts": {
+    "modus/platform-name/slack": {
+      "count": 1
+    }
+  },
+  "src/commands/scopes/conversations/list.ts": {
+    "modus/platform-name/slack": {
+      "count": 1
+    }
+  },
+  "src/commands/workflows/interfaces/add.ts": {
+    "modus/platform-name/slack": {
+      "count": 2
+    },
+    "modus/platform-name/teams": {
+      "count": 1
+    }
+  },
+  "src/commands/workflows/interfaces/list.ts": {
+    "modus/platform-name/slack": {
+      "count": 1
+    }
+  },
+  "tests/unit/input.test.ts": {
+    "modus/platform-name/postgresql": {
+      "count": 4
+    }
+  },
   "tests/unit/logo.test.ts": {
     "no-control-regex": {
       "count": 2
+    }
+  },
+  "tests/unit/scopes-selection-ops-apply.test.ts": {
+    "modus/platform-name/slack": {
+      "count": 2
+    }
+  },
+  "tests/unit/scopes-toolset.test.ts": {
+    "modus/platform-name/postgresql": {
+      "count": 4
+    },
+    "modus/platform-name/slack": {
+      "count": 1
     }
   }
 }

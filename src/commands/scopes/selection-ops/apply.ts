@@ -21,7 +21,7 @@ export function selectionOpsRequest(body: Record<string, unknown>):
 
 export default class ScopesSelectionOpsApply extends BaseCommand<typeof ScopesSelectionOpsApply> {
   static description =
-    'Apply selection changes to a scope. The JSON body is { "ops": [{ "op": "setConnectionPreferences", "connectionId": "<uuid>", "preferences": { "schemaVersion": 2, "mode": "all", "include": [], "exclude": [] } }] }. Preview with --validate-only; nothing is written. selectRoot, deselectRoot, and setRootDeepRules are deprecated.'
+    'Apply selection changes to a scope. The JSON body is { "ops": [{ "op": "setConnectionPreferences", "connectionId": "<uuid>", "preferences": { "schemaVersion": 2, "mode": "all", "include": [], "exclude": [] } }] }. Remove a connection with { "op": "removeConnection", "connectionId": "<uuid>" }. Preview with --validate-only; nothing is written.'
 
   static examples = [
     '<%= config.bin %> scopes selection-ops apply 42 --file selection.json',

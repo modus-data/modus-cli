@@ -230,8 +230,8 @@ set them afterwards with `layout update`.
   `scopes update` replaces whole lists such as `connectionSet`, `contextSelections`,
   and `evaluations`. Change one evaluation case with `scopes evaluations cases`, and
   one connection's selection with `scopes selection-ops apply` (`--validate-only`
-  previews and does not write). `selectRoot`, `deselectRoot`, and `setRootDeepRules`
-  are deprecated.
+  previews and does not write). Each `connectionSet` entry is `{ connection_id, preferences }`;
+  remove a connection with the `removeConnection` op.
 - **Workflows** — create, trigger, run history, ownership transfer.
 - **Context** — organization context items, notes, saved queries, file uploads,
   dashboards (drafts, publishing, version history, access, ownership transfer)
