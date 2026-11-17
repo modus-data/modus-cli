@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Removed
+
+- **MAJOR:** Custom context item relations no longer accept `content`. Use `edgeProperties` (`edge_properties` in Python) for a flat map of primitives or primitive arrays; omitting it replaces the map with `{}`.
+
 - **Removed — breaking (pre-1.0):** `scopes get` and `scopes list` print each scope's `connectionSet` as one entry per connection, `{ connection_id, preferences }`, without `path` or `context_enabled`; an entry with `preferences` can be sent back unchanged in `scopes update` (drop a deleted connection's entry, which has none, first). `scopes create|update` entries and `scopes selection-ops apply` `setConnectionPreferences` ops no longer take `context_enabled` / `contextEnabled`: `false` fails with 400 (exit 3), `true` is ignored.
 
 - **Added:** `context items query "<sql>"` runs one read-only SQL statement over the `context_items` table and prints its rows (`--pretty` for a table). It sees only the items you can read. `--max-rows` lowers the 1,000-row limit; the output says when rows were cut. Off by default per organization.
