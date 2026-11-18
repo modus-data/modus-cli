@@ -33,7 +33,7 @@ export default class ScopesConversationsList extends BaseCommand<typeof ScopesCo
       pageToken: this.flags['page-token'],
     })
     this.print(pageEnvelope(page), () =>
-      renderPage(page, ['threadId', 'firstMessage', 'messageCount', 'updatedAt']),
+      renderPage(page, ['threadId', 'ownedByCaller', 'firstMessage', 'messageCount', 'updatedAt']),
     )
   }
 }

@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- **Changed:** In table output, `scopes conversations list` shows an `ownedByCaller` column. A conversation you did not take part in shows only who took part and when, and `scopes conversations get` on it exits with not found, whatever your role.
+
 ### Removed
 
 - **MAJOR:** Custom context item relations no longer accept `content`. Use `edgeProperties` (`edge_properties` in Python) for a flat map of primitives or primitive arrays; omitting it replaces the map with `{}`.
