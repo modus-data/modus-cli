@@ -186,8 +186,19 @@ own platform key and the same `query` action. For other integrations, use operat
 from `modus tools list`, with optional slot `rules.allowedChannelIds` and
 `rules.allowedChannelNames`. Grants stay separate per connection.
 
+A platform people connect personally (Gmail, Google Calendar, Google Drive and others) also
+takes a `personal` slot beside `byConnection`, which runs the actions on the personal
+connection of whoever runs the scope. A runner who has not connected the platform is asked to
+connect it in chat, or gets a tool error elsewhere; nobody else's connection is used:
+
+```json
+{ "toolset": { "gmail": { "byConnection": {}, "personal": { "actions": ["search-threads"] } } } }
+```
+
+Adding a personal connection's UUID to `byConnection`, or new actions on one already there, returns 422; use `personal` for it. A personal connection the scope already holds in `byConnection` can be sent back unchanged.
+
 The API validates toolsets; the CLI does not translate or bind them. Flat `{ actions }`,
-integration action arrays, `scope`/personal encodings, action suffixes and unknown keys
+integration action arrays, `scope` encodings, action suffixes and unknown keys
 (including the retired `sql_runner`, `looker_bi`, `langfuse_observability` and `*_analytics`)
 return 422, even when resending a stored value. General tools, MCP, Pipedream and Coding formats are unchanged.
 
