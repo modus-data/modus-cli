@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+- **Added:** `context custom-items batch-delete --source-id <id>` soft-deletes custom context items by source key (optionally narrowed with `--collection-id` / `--external-id`). Integration-derived items are never affected. By default only the targeted node is removed — `--kind` disambiguates an entity from its samples at the same path, and `--cascade` also removes everything beneath it. Processes up to 1000 items per call; when more remain it prints a `--cursor` to continue.
+- **Added:** `context custom-items list` takes `--source-id`, `--collection-id` and `--external-id` to restrict a listing to one source, collection or entity and everything beneath it.
+
 ### Changed
 
 - **Changed:** a workflow created without `accessConfig` (`workflows create`) is now private, with no group grants and no invitees; its creator can share it later. Pass an `accessConfig` with `visibility: 'shared'` for the previous behaviour. A service account token that omits it still creates the workflow shared with the whole organization. Existing workflows are unchanged.
