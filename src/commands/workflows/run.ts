@@ -6,6 +6,7 @@ export default class WorkflowsRun extends BaseCommand<typeof WorkflowsRun> {
     'Start a workflow run and stream events (SDK: client.workflows.runs.create). Use --thread to continue a session; --json for structured SSE events.'
 
   static examples = [
+    '<%= config.bin %> workflows run 42',
     '<%= config.bin %> workflows run 42 "Summarize yesterday\'s sales"',
     '<%= config.bin %> workflows run 42 "Follow up" --thread SESSION_ID',
     '<%= config.bin %> workflows run 42 "Draft only" --version draft --json',
