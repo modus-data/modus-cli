@@ -4,6 +4,7 @@
 
 ### Changed
 
+- **Changed:** a workflow created without `accessConfig` (`workflows create`) is now private, with no group grants and no invitees; its creator can share it later. Pass an `accessConfig` with `visibility: 'shared'` for the previous behaviour. A service account token that omits it still creates the workflow shared with the whole organization. Existing workflows are unchanged.
 - **Changed:** In table output, `scopes conversations list` shows an `ownedByCaller` column. A conversation you did not take part in shows only who took part and when, and `scopes conversations get` on it exits with not found, whatever your role.
 
 ### Removed
