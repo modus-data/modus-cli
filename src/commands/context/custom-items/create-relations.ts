@@ -3,9 +3,12 @@ import { BaseCommand } from '../../../base-command.js'
 import { readJsonBody } from '../../../input.js'
 
 export default class ContextCustomItemsCreateRelations extends BaseCommand<typeof ContextCustomItemsCreateRelations> {
-  static description = 'Create or update typed relations between context items.'
+  static description = 'Create or update typed relations between context items. Each relation takes fromUid, toUid, relationType, and optional edgeProperties (a flat map of primitives or primitive arrays). Omitting edgeProperties writes an empty map.'
 
-  static examples = ['<%= config.bin %> context custom-items create-relations --file relations.json']
+  static examples = [
+    '<%= config.bin %> context custom-items create-relations --file relations.json',
+    `echo '[{"fromUid":"source-1","toUid":"target-1","relationType":"depends_on","edgeProperties":{"source":"go.mod"}}]' | <%= config.bin %> context custom-items create-relations --body -`,
+  ]
 
   static flags = {
     ...BaseCommand.baseFlags,
